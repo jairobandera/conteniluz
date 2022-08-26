@@ -31,6 +31,9 @@ if (isset($_POST['usuario']) && isset($_POST['password'])) {
                     $resultado = mysqli_query($conectado, $sql);
                     $fila = mysqli_fetch_assoc($resultado);
                     $_SESSION['id_alumno'] = $fila['id'];
+                    $_SESSION['nombre_alumno'] = $fila['nombre'];
+                    $_SESSION['apellido_alumno'] = $fila['apellido'];
+                    $_SESSION['telefono'] = $fila['telefono'];
                     header('Location: Template/alumno/index.php');
                 }else if($_SESSION['tipo'] == 'PROFESOR'){
                     $sql = "SELECT p.id, p.nombre, p.apellido, p.telefono, p.id_empresa FROM usuario AS u, profesor AS p WHERE usuario = '$usuario' AND pass = '$password' AND u.id = p.id_usuario";

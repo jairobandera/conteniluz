@@ -83,22 +83,25 @@ include 'Template/head.php';
         <div class="page-wrapper">
 			<div class="page-content">
                 <h6 class="mb-0 text-uppercase">Listado de cursos</h6>
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">
-                        <?php
-      				        foreach ($videos as $video) { ?>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="../../assets/img/cursos/<?php echo $video["miniatura"] ?>" class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><?php echo $video["titulo_video"] ?></h5>
-                                        <p class="card-text"><?php echo $video["descripcion"] ?></p><a href="javascript:;" class="btn btn-info">Editar</a>
-										<a href="agregarClases.php?id_usuario=<?php echo $id_usuario; ?>&id_empresa=<?php echo $id_empresa ?>&id_curso=<?php echo $curso["id"] ?>" class="btn btn-danger">Eliminar</a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-               
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">						
+						<?php
+							foreach ($videos as $video) { ?>
+							<form action="../eliminarEditarVideo.php" method="POST" enctype="multipart/form-data">
+								<div class="col">
+									<div class="card">
+										<img src="../../assets/img/cursos/<?php echo $video["miniatura"] ?>" class="card-img-top" alt="...">
+										<div class="card-body">
+											<h5 class="card-title"><?php echo $video["titulo_video"] ?></h5>
+											<p class="card-title"><?php echo $video["descripcion"] ?></p>
+											<input type="hidden" name="id" id="id" value="<?php echo $video["id"] ?>">
+											<button type="submit" name="edit-btn" class="btn btn-info"><i class=""></i>Editar</button>
+											<button type="submit" name="delete-btn" class="btn btn-danger"><i class=""></i>Eliminar</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						<?php } ?>
+                    </div>               
             </div>
         </div>
 

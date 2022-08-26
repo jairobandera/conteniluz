@@ -10,7 +10,7 @@ if(isset($_POST['upload-btn'])){
 
     //$descripcion = $_POST['viddesc'];
     $titulo = $_POST['vidtitle'];
-    //$file = $_POST['file1'];
+    $duracion = $_POST['duracion'];
     $precio = $_POST['precio'];
     $id_usuario = $_POST['id_usuario'];
 
@@ -25,7 +25,7 @@ if(isset($_POST['upload-btn'])){
     //$fileSize = $_FILES['file1']['size'];
 
     //$sentenciaSQL = $conn->query("INSERT INTO videos (id_usuario,id_curso,id_empresa,id_video,titulo_video,descripcion,miniatura) VALUES (2,4,$id_empresa,'$link','$titulo','$descripcion','1.png')");
-    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,precio) VALUES ($id_empresa,$id_profesor,'$titulo','$fileName',$precio)");
+    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,precio,duracion) VALUES ($id_empresa,$id_profesor,'$titulo','$fileName',$precio,$duracion)");
 
     if($sentenciaSQL){
         header ('Location: /pablo/Template/profesor/index.php');

@@ -83,7 +83,8 @@ include 'Template/head.php';
                                 <div class="card">
                                     <img src="../../assets/img/empresas/<?php echo $curso["miniatura"] ?>" class="card-img-top" alt="...">
                                     <div class="card-body">
-                                        <h5 class="card-title"><?php echo $curso["titulo_curso"] ?></h5>
+                                        <h5 class="card-title"><?php echo $curso["titulo_curso"]; ?></h5>
+										<h6>Duración en meses: <?php echo $curso['duracion']; ?></h6>
                                         <p class="card-text">$ <?php echo $curso["precio"] ?></p><a href="editarCursos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-info">Editar</a>
 										<a href="../eliminarCursos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-danger">Eliminar</a>
 										<a href="verVideos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-warning">Ver videos</a>

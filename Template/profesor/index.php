@@ -97,6 +97,14 @@ print_r($response);*/
 													<input type="text"  name="precio" class="form-control" placeholder="$" />
 												</div>
 											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">Duracion del curso</h6>
+												</div>
+												<div class="col-sm-9">
+													<input type="number" min="1"  name="duracion" class="form-control" placeholder="3 Meses" required />
+												</div>
+											</div>
 											<div class="mb-3">
 												<h6 for="inputProductDescription" class="form-label">Miniatura</h6>
 												<input class="form-control" type="file" name="file1" accept="jpg" multiple>

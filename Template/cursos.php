@@ -13,7 +13,7 @@ if(isset($_GET['id_empresa'])){
 if(isset($_SESSION['id_usuario'])){
 	$id_usuario = $_SESSION['id_usuario'];
 	$resultado = $conectado->query("SELECT c.id FROM cursos AS c WHERE EXISTS(
-	SELECT * FROM alumno AS a, usuario AS u WHERE a.id = c.id_alumno AND u.id = $id_usuario AND u.tipo = 'USUARIO')");
+	SELECT * FROM alumno AS a, usuario AS u WHERE a.id_curso = c.id AND u.id = $id_usuario AND u.tipo = 'USUARIO')");
 	$cursos2 = $resultado->fetch_all(MYSQLI_ASSOC);
 	//$resultado= $resultado->fetch_assoc();
 	$array = array();

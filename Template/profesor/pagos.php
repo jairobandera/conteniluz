@@ -2,8 +2,12 @@
 session_start();
 include '../../config.php';
 $conectado = conectar();
-$resultado = $conectado->query("SELECT * FROM cursos WHERE id_empresa = '$_SESSION[id_usuario]'");
-$cursos = $resultado->fetch_all(MYSQLI_ASSOC);
+
+$id_profesor = $_SESSION['id_profesor'];
+$resultado = $conectado->query("SELECT a.nombre,a.telefono, a.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.fecha_caducidad FROM pagos AS p, alumno AS a WHERE EXISTS(
+SELECT * FROM cursos AS c WHERE EXISTS(
+SELECT * FROM empresa AS e WHERE e.id = c.id_empresa AND p.id_curso = c.id AND c.id_profesor = $id_profesor))");
+$pagos = $resultado->fetch_all(MYSQLI_ASSOC);
 
 
 include 'Template/head.php';
@@ -72,39 +76,43 @@ include 'Template/head.php';
                                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
+                                                <th>Alumno</th>
+												<th>Telefono</th>
+                                                <th>Metodo</th>
+                                                <th>Status</th>
+                                                <th>Monto</th>
+                                                <th>Fecha</th>
+												<th>Caducidad</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                            </tr>
+											<?php foreach($pagos as $pago){ ?>
+												<tr>
+													<td><?php echo $pago['nombre'].' '.$pago['apellido']; ?></td>
+													<td><?php echo $pago['telefono']; ?></td>
+													<td><?php echo $pago['payment_type']; ?></td>
+													<td <?php if($pago['status'] == 'approved'){ echo 'style="background-color:#32a840;"';
+
+													}else if($pago['status'] == 'cancelled'){
+														echo 'style="background-color:#f2493d;"';
+													}else if($pago['status'] == 'pending'){
+														echo 'style="background-color:#e3e044;"';
+													}
+													 ?>><?php echo $pago['status']; ?></td>
+													<td><?php echo $pago['monto']; ?></td>
+													<td><?php echo $pago['fecha_pago']; ?></td>
+													<td><?php echo $pago['fecha_caducidad']; ?></td>
+												</tr>
+											<?php } ?>
                                         <tfoot>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
+												<th>Alumno</th>
+												<th>Telefono</th>
+                                                <th>Metodo</th>
+                                                <th>Status</th>
+                                                <th>Monto</th>
+                                                <th>Fecha</th>
+												<th>Caducidad</th>
                                             </tr>
                                         </tfoot>
                                     </table>

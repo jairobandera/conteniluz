@@ -17,7 +17,7 @@ echo '<pre>';
 print_r($response);*/
 ?>
 
-<body class="bg-theme bg-theme2">
+<body class="bg-theme bg-theme2" onload="habilitar();">
 	<!--wrapper-->
 	<div class="wrapper">
 		<!--sidebar wrapper -->
@@ -104,20 +104,20 @@ print_r($response);*/
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0">Link Vimeo</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" checked="checked" value="vimeo"> Link Vimeo</h6>
 												</div>
 												<div class="col-sm-9">
-													<input type="text"  name="linkVimeo" class="form-control" placeholder="Id Vimeo" />
+													<input type="text"  name="linkVimeo" id="linkVimeo" class="form-control" placeholder="Id Vimeo" />
 												</div>
 											</div>
 											<div class="row mb-3">
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0">Link Youtube</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="youtube"> Link Youtube</h6>
 												</div>
 												<div class="col-sm-9">
-													<input type="text"  name="linkYoutube" class="form-control" placeholder="Link Youtube" />
+													<input type="text"  name="linkYoutube" id="linkYoutube" class="form-control" placeholder="Link Youtube" />
 												</div>
 											</div>
 											<div class="row mb-3">
@@ -141,3 +141,4 @@ print_r($response);*/
 <?php
 include 'Template/footer.php';
 ?>
+<script src="js.js"></script>

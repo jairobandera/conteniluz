@@ -97,7 +97,7 @@ if(isset($_GET['id_curso'])){
 													<?php if($video["tipo"] == 'V'){ ?>
 														<iframe src="https://player.vimeo.com/video/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 													<?php }else{ ?>
-														<iframe src="http://www.youtube.com/embed/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+														<iframe src="http://www.youtube.com/embed/<?php echo $video["id_video"] ?>?showinfo=0" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 													<?php } ?>
 												</div>
 												<div class="vlt-post-content">

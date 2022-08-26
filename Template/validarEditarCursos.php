@@ -6,6 +6,7 @@ if(isset($_POST['upload-btn'])){
     $conn = conectar();
     
     $titulo = $_POST['vidtitle'];
+    $duracion = $_POST['duracion'];
     $precios = $_POST['precio'];
     $file = $_FILES['file1'];
     $fileName = $file['name'];
@@ -23,9 +24,9 @@ if(isset($_POST['upload-btn'])){
     //echo $imagen;
 
     if($fileName != $imagen AND $fileName != ''){
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$fileName', precio = '$precios' WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$fileName', precio = '$precios', duracion = $duracion WHERE id = $id_curso");
     }else if($fileName == ''){
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', precio = '$precios' WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', precio = '$precios', duracion = $duracion WHERE id = $id_curso");
     }
     
     if($sentenciaSQL){
