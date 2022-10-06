@@ -1,20 +1,32 @@
 <?php
 include '../../config.php';//BD
 session_start();
+$conectado = conectar();
 
 $_SESSION['id_empresa'] = $id_empresa = $_GET['id_empresa'];
-$_SESSION['id_curso'] = $id_curso = $_GET['id_curso'];	
+$_SESSION['id_curso'] = $id_curso = $_GET['id_curso'];
+
+$resultado = $conectado->query("SELECT v.es_presentacion FROM videos AS v WHERE v.id_curso = '$id_curso'");
+	
+//echo $id_profesor;
+	
+$es_presentacion = $resultado->fetch_all(MYSQLI_ASSOC);
+
+if($es_presentacion){
+	foreach($es_presentacion as $tiene){
+		if($tiene['es_presentacion'] == 'Y'){
+			$mostrar = 'N';
+			break;
+		}else{
+			$mostrar = 'Y';
+		}
+	}
+}else{
+	$mostrar = 'Y';
+}
+
 
 include 'Template/head.php';
-/*require '../config.php'; //config de vimeo
-require '../../vendor/autoload.php';
-use Vimeo\Vimeo;
-
-$client = new Vimeo("$clientId", "$clientSecret", "$accessToken");
-
-$response = $client->request('/tutorial', array(), 'GET');
-echo '<pre>';
-print_r($response);*/
 ?>
 
 <body class="bg-theme bg-theme2" onload="habilitar();">
@@ -27,7 +39,7 @@ print_r($response);*/
 					<img src="../../assets/assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
 				</div>
 				<div>
-					<h4 class="logo-text">Dashtrans</h4>
+					<h4 class="logo-text">Conteniluz</h4>
 				</div>
 				<div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
 				</div>
@@ -38,7 +50,7 @@ print_r($response);*/
 					<a href="javascript:;" class="has-arrow">
 						<div class="parent-icon"><i class='bx bx-home-circle'></i>
 						</div>
-						<div class="menu-title">Dashboard</div>
+						<div class="menu-title">Tareas</div>
 					</a>
 					<ul>
 						<li> <a href="cursos.php"><i class="bx bx-right-arrow-alt"></i>Ver Cursos</a>
@@ -97,29 +109,41 @@ print_r($response);*/
 													<h6 class="mb-0">Descripcion</h6>
 												</div>
 												<div class="col-sm-9">
-													<input type="text" name="viddesc" class="form-control" placeholder="Ingrese una descripcion" />
+													<textarea name="viddesc" class="form-control" rows="6" maxlength="300"></textarea>
+													<!--<input type="text" name="viddesc" class="form-control" placeholder="Ingrese una descripcion" />-->
 												</div>
 											</div>
 											<div class="row mb-3">
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" checked="checked" value="vimeo"> Link Vimeo</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" checked="checked" value="V"> Link Vimeo</h6>
 												</div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkVimeo" id="linkVimeo" class="form-control" placeholder="Id Vimeo" />
 												</div>
 											</div>
 											<div class="row mb-3">
-												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
-												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="youtube"> Link Youtube</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="Y"> Link Youtube</h6>
 												</div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkYoutube" id="linkYoutube" class="form-control" placeholder="Link Youtube" />
 												</div>
 											</div>
+											<!-- lo muestro solo si no hay ningun video de presentacion -->
+											<?php if($mostrar == 'Y'){ ?>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">Video de presentacion</h6>
+												</div>
+												<div class="col-sm-3">
+													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="Y"> Si</h6>
+													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="N" checked="checked"> No</h6>
+												</div>
+											</div>
+											<?php } ?>
+
 											<div class="row mb-3">
 												<div class="col-sm-3">
 													<h6 for="inputProductDescription" class="form-label">Miniatura</h6>

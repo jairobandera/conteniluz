@@ -5,12 +5,11 @@ $conectado = conectar();
 
 if(isset($_GET['id_curso'])){
 	$id_curso = $_GET['id_curso'];
-	$resultado = $conectado->query("SELECT * FROM videos AS v WHERE EXISTS(
-		SELECT * FROM alumno AS a WHERE EXISTS(
+	$resultado = $conectado->query("SELECT v.*, a.pago FROM videos AS v, alumno AS a WHERE EXISTS(
 		SELECT * FROM cursos AS c WHERE a.id_curso = $id_curso
 		AND v.id_curso = $id_curso 
 		AND v.id_curso = $id_curso
-		AND a.id_usuario = ".$_SESSION['id_usuario']."))");
+		AND a.id_usuario = ".$_SESSION['id_usuario'].")");
 	$videos = $resultado->fetch_all(MYSQLI_ASSOC);
 }
 
@@ -22,7 +21,7 @@ if(isset($_GET['id_curso'])){
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Vinero - Very Clean and Minimal Portfolio Website Template</title>
+		<title>Clases</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- FAVICON -->
@@ -94,10 +93,22 @@ if(isset($_GET['id_curso'])){
 										<article class="vlt-post-standard cbp-item">
 											<div class="vlt-post-inner">
 												<div class="vlt-post-thumbnail">
-													<?php if($video["tipo"] == 'V'){ ?>
+													<?php if($video["tipo"] == 'V' AND $video['pago'] == 'Y'){ ?>
 														<iframe src="https://player.vimeo.com/video/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-													<?php }else{ ?>
-														<iframe src="http://www.youtube.com/embed/<?php echo $video["id_video"] ?>?showinfo=0" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+													<?php }else if($video["tipo"] == 'V' AND $video['pago'] == 'N'){ ?>
+														<?php if($video === reset($videos) AND ($video['es_presentacion'] == 'Y')){ ?><!-- cargo solo el primer video-->
+															<iframe src="https://player.vimeo.com/video/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+														<?php }else{ ?>
+															<img src="../../assets/img/cursos/<?php echo $video["miniatura"]; ?>" alt="" width="900" height="506">
+														<?php } ?>
+													<?php }else if($video["tipo"] == 'Y' AND $video['pago'] == 'Y'){ ?>	
+														<iframe src="http://www.youtube.com/embed/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+													<?php }else if($video["tipo"] == 'Y' AND $video['pago'] == 'N'){ ?>
+														<?php if($video === reset($videos) AND ($video['es_presentacion'] == 'Y')){ ?><!-- cargo solo el primer video-->
+															<iframe src="http://www.youtube.com/embed/<?php echo $video["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+														<?php }else{ ?>
+															<img src="../../assets/img/cursos/<?php echo $video["miniatura"]; ?>" alt="" width="900" height="506">
+														<?php } ?>
 													<?php } ?>
 												</div>
 												<div class="vlt-post-content">
@@ -116,12 +127,12 @@ if(isset($_GET['id_curso'])){
 										<!-- /.vlt-post-standard -->
 									</div>
 									<!--/.vlt-postlist .vlt-postlist-standard .cubeportfolio .clearfix-->
-									<nav class="vlt-pagination-numeric">
+									<!--<nav class="vlt-pagination-numeric">
 										<span class="page-numbers current">1</span>
 										<a class="page-numbers" href="#">2</a>
 										<a class="next page-numbers" href="#">Next</a>
 									</nav>
-									<!-- /.vlt-pagination-numeric -->
+									 /.vlt-pagination-numeric -->
 								</div>
 							</div>
 						</div>

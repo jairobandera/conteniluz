@@ -24,7 +24,8 @@ $videos = $resultado->fetch_all(MYSQLI_ASSOC);
 
 include 'Template/head.php';
 ?>
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <body class="bg-theme bg-theme2">
 	<!--wrapper-->
 	<div class="wrapper">
@@ -105,7 +106,7 @@ include 'Template/head.php';
             </div>
         </div>
 
-        
+<script src='js.js'></script>   
 <?php
 include 'Template/footer.php';
 ?>

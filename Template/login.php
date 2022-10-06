@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-
-if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
+/*if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 	header('Location: ../MercadoPago/index.php');
 }else if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'PROFESOR'){
 	echo '<script>alert("Ingrese como alumno");</script>';
@@ -20,8 +19,12 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 				header('Location: index.php');
 		}
 	}
-}
-/*if(isset($_SESSION['tipo'])){
+}*/
+/*if(!isset($_SESSION['id_empresa'])){
+
+}*/
+
+if(isset($_SESSION['tipo'])){
 	if($_SESSION['tipo'] == 'ADMIN'){
 		header('Location: admin/index.php');
 	}else if($_SESSION['tipo'] == 'USUARIO'){
@@ -31,7 +34,7 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 	}else{
 			header('Location: index.php');
 	}
-}*/
+}
 
 
 ?>
@@ -54,7 +57,7 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="../assets/assets/css/app.css" rel="stylesheet">
     <link href="../assets/assets/css/icons.css" rel="stylesheet">
-    <title>Dashtrans - Bootstrap5 Admin Template</title>
+    <title>Iniciar sesion</title>
 </head>
 
 <body class="bg-theme bg-theme2">
@@ -65,13 +68,13 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
                 <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
                     <div class="col mx-auto">
                         <div class="mb-4 text-center">
-                            <img src="../assets/assets/images/logo-img.png" width="180" alt="" />
+                            <!--<img src="../assets/assets/images/logo-img.png" width="180" alt="" />-->
                         </div>
                         <div class="card">
                             <div class="card-body">
                                 <div class="border p-4 rounded">
                                     <div class="text-center">
-                                        <h3 class="">Sign in</h3>
+                                        <h3 class="">Iniciar sesion</h3>
                                     </div>
                                     <div class="form-body">
                                         <form class="row g-3" method="POST" action="../validarUsuario.php">
@@ -91,9 +94,14 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
                                                 </div>
                                             </div>
                                             <div class="col-12">
+                                                <?php if(isset($_SESSION['id_empresa']) AND isset($_SESSION['id_curso'])){ 
+                                                    echo '<a href="register.php" style="text-align:center;"><h3>Crear una cuenta</h3></a>'; 
+                                                } ?>
+                                            </div>
+                                            <div class="col-12">
                                                 <div class="d-grid">
-                                                    <button type="submit" class="btn btn-light"><i
-                                                            class="bx bxs-lock-open"></i>Sign in</button>
+                                                    <button type="submit" name="login" class="btn btn-light"><i
+                                                            class="bx bxs-lock-open"></i>Inisiar sesion</button>
                                                 </div>
                                             </div>
                                         </form>

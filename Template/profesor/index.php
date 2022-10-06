@@ -4,15 +4,6 @@ session_start();
 $id_usuario = $_SESSION['id_usuario'];	
 
 include 'Template/head.php';
-/*require '../config.php'; //config de vimeo
-require '../../vendor/autoload.php';
-use Vimeo\Vimeo;
-
-$client = new Vimeo("$clientId", "$clientSecret", "$accessToken");
-
-$response = $client->request('/tutorial', array(), 'GET');
-echo '<pre>';
-print_r($response);*/
 ?>
 
 <body class="bg-theme bg-theme2">
@@ -25,7 +16,7 @@ print_r($response);*/
 					<img src="../../assets/assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
 				</div>
 				<div>
-					<h4 class="logo-text">Dashtrans</h4>
+					<h4 class="logo-text">Conteniluz</h4>
 				</div>
 				<div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
 				</div>
@@ -36,7 +27,7 @@ print_r($response);*/
 					<a href="javascript:;" class="has-arrow">
 						<div class="parent-icon"><i class='bx bx-home-circle'></i>
 						</div>
-						<div class="menu-title">Dashboard</div>
+						<div class="menu-title">Panel administrador</div>
 					</a>
 					<ul>
 						<li> <a href="cursos.php"><i class="bx bx-right-arrow-alt"></i>Ver Cursos</a>
@@ -58,10 +49,10 @@ print_r($response);*/
 					</div>
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
+							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->	
 							<div class="user-info ps-3">
-								<p class="user-name mb-0">Pauline Seitz</p>
-								<p class="designattion mb-0">Web Designer</p>
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
 							</div>
 						</a>
 					</div>
@@ -89,12 +80,31 @@ print_r($response);*/
 													<input type="text" name="vidtitle" class="form-control" placeholder="Ingrese el titulo" />
 												</div>
 											</div>
+											<!--<div class="input-group mb-3">
+												<div class="col-sm-3">
+													<label style="border:none; background-color:transparent; margin-left:-10px; !important" class="input-group-text" for="inputGroupSelect01"><h6>Moneda</h6></label>
+												</div>
+												<div class="col-sm-1" style="margin-left:6px;">
+													<select name="moneda" class="form-control" id="inputGroupSelect01" style="background-color:rgb(0 0 0 / 15%); !important">
+														<option value="pesos" selected>$</option>
+														<option value="dolares">USD</option>
+													</select>
+												</div>
+											</div>-->
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 class="mb-0">Precio</h6>
+													<h6 class="mb-0">Precio en pesos</h6>
 												</div>
 												<div class="col-sm-9">
-													<input type="text"  name="precio" class="form-control" placeholder="$" />
+													<input type="text"  name="precioPesos" class="form-control" placeholder="$" />
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">Precio en dolares</h6>
+												</div>
+												<div class="col-sm-9">
+													<input type="text"  name="precioDolares" class="form-control" placeholder="USD" />
 												</div>
 											</div>
 											<div class="row mb-3">

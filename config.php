@@ -1,20 +1,16 @@
 <?php
 
-/* Admin */
-/* brinda usuario y contraseña para acceder al profesor/alumno
-compra de cursos
-cuantos profesores hay y datos
+//ruta raiz del proyecto
+define('ROOT', dirname(__FILE__));
+//ROOT + carpeta imagenes
+define('RUTAEMPRESAS', ROOT . '\uploads\empresas' . "\\");
+define('RUTACURSOS', ROOT . '\uploads\cursos' . "\\");
+define('RUTAVIDEOSMINIATURAS', ROOT . '\uploads\videos\miniaturas' . "\\");
+define('RUTAVIDEOS', ROOT . '\uploads\videos' . "\\");
 
-Proefesor
 
-titulo/descripcion/video/miniatura/precio
+define("PAIS", "Argentina");
 
-
-alumno
-
-manera de comunicarse con profesor
-
-*/
 
 function conectar(){
   $host = "localhost";
@@ -38,6 +34,27 @@ function conectar(){
 
 function desconectar($conn){
   $conn->close();
+}
+
+function geoLocalizacion(){
+  $access_key = '8d222a82f44245c1c9c053915d083469';
+  //$ip = $_SERVER['REMOTE_ADDR'];
+  //echo $ip;
+  // Initialize CURL:
+  $ch = curl_init('http://api.ipstack.com/check?access_key='.$access_key.'');
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  // Store the data:
+  $json = curl_exec($ch);
+  curl_close($ch);
+
+  // Decode JSON response:
+  $api_result = json_decode($json, true);
+
+  // Output the "capital" object inside "location"
+  //echo $api_result['location']['capital'];
+ // var_dump($api_result['location']);
+  isset($api_result['country_name']) ? $pais = $api_result['country_name'] : $pais = "Argentina";
+  return $pais;
 }
 
 

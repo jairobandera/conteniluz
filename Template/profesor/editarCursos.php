@@ -81,7 +81,7 @@ include 'Template/head.php';
 								<div class="card">
 								<h2>Editar Curso</h2>
 									<div class="card-body">
-										<form action="../validarEditarCursos.php" method="POST" enctype="multipart/form-data">
+										<form action="../validarEditarCursos.php" id="form" method="POST" enctype="multipart/form-data">
 											<div class="row mb-3">
 												<div class="col-sm-3">
 													<h6 class="mb-0">Titulo</h6>
@@ -90,12 +90,39 @@ include 'Template/head.php';
 													<input type="text" name="vidtitle" class="form-control" value="<?php echo $cursos[0]['titulo_curso']; ?>"/>
 												</div>
 											</div>
+											<!--<div class="input-group mb-3">
+												<div class="col-sm-3">
+													<label style="border:none; background-color:transparent; margin-left:-10px; !important" class="input-group-text" for="inputGroupSelect01"><h6>Moneda</h6></label>
+												</div>
+												<div class="col-sm-1" style="margin-left:6px;">
+													<select name="moneda" class="form-control" id="inputGroupSelect01" style="background-color:rgb(0 0 0 / 15%); !important">
+														<?php //if($cursos[0]['moneda'] == "pesos"){ ?>
+															<option value="pesos" selected>$</option>
+															<option value="dolares">USD</option>
+															<?php //}else if($cursos[0]['moneda'] == "dolares"){ ?>
+															<option value="dolares" selected>USD</option>
+															<option value="pesos">$</option>
+														<?php //}else{ ?>
+															<option value="pesos" selected>$</option>
+															<option value="dolares">USD</option>
+														<?php //} ?>
+													</select>	
+												</div>
+											</div>-->
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 class="mb-0">Precio</h6>
+													<h6 class="mb-0">Precio en pesos $</h6>
 												</div>
 												<div class="col-sm-9">
-                                                <input type="text" name="precio" class="form-control" value="<?php echo $cursos[0]['precio']; ?>"/>
+                                                <input type="text" name="precioPesos" class="form-control" value="<?php echo $cursos[0]['pesos']; ?>"/>
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">Precio en dolares USD</h6>
+												</div>
+												<div class="col-sm-9">
+                                                <input type="text" name="precioDolares" class="form-control" value="<?php echo $cursos[0]['dolares']; ?>"/>
 												</div>
 											</div>
 											<div class="row mb-3">
@@ -115,7 +142,7 @@ include 'Template/head.php';
                                                     <img src="../../assets/img/empresas/<?php echo $cursos[0]['miniatura']; ?>" width="100px" style="margin-bottom:5px;" alt="">
                                                 </div>
                                             </div>
-											<button type="submit" name="upload-btn" class="btn btn-success"><i class=""></i>Editar</button>
+											<button type="submit" name="upload-btn" id="upload-btn" class="btn btn-success"><i class=""></i>Editar</button>
 										</form>
 									</div>
 								</div>

@@ -1,20 +1,27 @@
 <?php
 session_start();
-$_SESSION['pagar'] = true;
+//$_SESSION['pagar'] = true;
 
 if(isset($_GET['id_curso'])){
-    $id_curso = $_GET['id_curso'];
-    $id_empresa = $_GET['id_empresa'];
-	$precio = $_GET['precio'];
-	$titulo = $_GET['titulo'];
+    $_SESSION['id_curso'] = $id_curso = $_GET['id_curso'];
+    $_SESSION['id_empresa'] = $id_empresa = $_GET['id_empresa'];
+}else{
+	$id_curso = 0;
+	$id_empresa = 0;
 }
 
-if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
-	$id_curso = $_GET['id_curso'];
-    $id_empresa = $_GET['id_empresa'];
-	$precio = $_GET['precio'];
-	$titulo = $_GET['titulo'];
-	header('Location: ../MercadoPago/index.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&precio='.$precio.'&titulo='.$titulo);
+if(isset($_SESSION['error'])){
+	$error = $_SESSION['error'];
+}
+
+if(isset($_GET['id_empresa']) AND isset($_GET['id_curso']) AND isset($_GET['titulo']) AND isset($_GET['precio'])){
+	//Hacer que se logee el usuario antes de comprar//
+	$_SESSION['id_curso'] = $id_curso = $_GET['id_curso'];
+    $_SESSION['id_empresa'] = $id_empresa = $_GET['id_empresa'];
+	$_SESSION['precio'] = $precio = $_GET['precio'];
+	$_SESSION['titulo'] = $titulo = $_GET['titulo'];
+	header('Location: login.php');
+	/*header('Location: ../MercadoPago/index.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&precio='.$precio.'&titulo='.$titulo);*/
 }
 
 ?>
@@ -37,7 +44,7 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 		<link href="../assets/assets/css/app.css" rel="stylesheet">
 		<link href="../assets/assets/css/icons.css" rel="stylesheet">
-		<title>Dashtrans - Bootstrap5 Admin Template</title>
+		<title>Registrar</title>
 	</head>
 
 <body class="bg-theme bg-theme2">
@@ -48,7 +55,7 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 				<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-2">
 					<div class="col mx-auto">
 						<div class="my-4 text-center">
-							<img src="../assets/assets/images/logo-img.png" width="180" alt="" />
+							<!--<img src="../assets/assets/images/logo-img.png" width="180" alt="" />-->
 						</div>
 						<div class="card">
 							<div class="card-body">
@@ -59,7 +66,7 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 										</p>
 									</div>
 									<div class="form-body">
-										<form class="row g-3" action="validarRegistro.php" method="post">
+										<form class="row g-3" action="../validarUsuario.php" method="post">
                                             <div class="col-sm-6">
 												<input type="hidden" name="idCurso" value="<?php echo $id_curso ?>" class="form-control" id="inputIdCurso">
 											</div>
@@ -69,25 +76,28 @@ if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['ti
 
 											<div class="col-sm-6">
 												<label for="inputFirstName" class="form-label">Primer Nombre</label>
-												<input type="text" name="nombre" class="form-control" id="inputFirstName" placeholder="Jhon">
+												<input type="text" name="nombre" class="form-control" id="inputFirstName" placeholder="Jhon"  value="<?php if(isset($_SESSION['nombre_alumno'])){ echo $_SESSION['nombre_alumno']; } ?>">
 											</div>
 											<div class="col-sm-6">
 												<label for="inputLastName" class="form-label">Primer Apellido</label>
-												<input type="text" name="apellido" class="form-control" id="inputLastName" placeholder="Deo">
+												<input type="text" name="apellido" class="form-control" id="inputLastName" placeholder="Deo" value="<?php if(isset($_SESSION['apellido_apellido'])){ echo $_SESSION['apellido_apellido']; } ?>">
 											</div>
                                             <div class="col-sm-6">
 												<label for="inputLastPhone" class="form-label">Telefono</label>
-												<input type="text" name="telefono" class="form-control" id="inputLastPhone" placeholder="+598 xxx">
+												<input type="text" name="telefono" class="form-control" id="inputLastPhone" placeholder="+598 xxx" value="<?php if(isset($_SESSION['telefono'])){ echo $_SESSION['telefono']; } ?>">
 											</div>
 											<div class="col-12">
 												<label for="inputEmailAddress" class="form-label">Usuario</label>
-												<input type="text" name="usuario" class="form-control" id="inputEmailAddress" placeholder="Ingrese su usuario">
+												<input type="text" name="usuario" class="form-control" id="inputEmailAddress" placeholder="Ingrese su usuario" value="<?php if(isset($_SESSION['usuario'])){ echo $_SESSION['usuario']; } ?>">
 											</div>
 											<div class="col-12">
 												<label for="inputChoosePassword" class="form-label">Password</label>
 												<div class="input-group" id="show_hide_password">
-													<input type="password" name="password" class="form-control border-end-0" id="inputChoosePassword" value="" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+													<input type="password" name="password" class="form-control border-end-0" id="inputChoosePassword" value="<?php if(isset($_SESSION['password'])){ echo $_SESSION['password']; } ?>" placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
 												</div>
+											</div>
+											<div class="col-12">
+												<label for="" class="form-label text-center" style="color:red;"><?php if(isset($error)){echo $error; } ?></label>
 											</div>
 											<div class="col-12">
 												<div class="d-grid">

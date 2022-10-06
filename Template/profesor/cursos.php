@@ -7,8 +7,9 @@ $id_usuario = $_SESSION['id_usuario'];
 $id_profesor = $_SESSION['id_profesor'];
 
 $resultado = $conectado->query("SELECT * FROM cursos AS c WHERE EXISTS(
-	SELECT * FROM profesor AS p WHERE EXISTS(
-	SELECT * FROM usuario AS u WHERE c.id_profesor = $id_profesor AND u.id = $id_usuario))");
+SELECT * FROM profesor AS p WHERE c.id_profesor = '$id_profesor')");
+
+//echo $id_profesor;
 
 $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
 
@@ -62,10 +63,10 @@ include 'Template/head.php';
 					</div>
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
+							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->
 							<div class="user-info ps-3">
-								<p class="user-name mb-0">Pauline Seitz</p>
-								<p class="designattion mb-0">Web Designer</p>
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
 							</div>
 						</a>
 					</div>
@@ -81,11 +82,12 @@ include 'Template/head.php';
       				        foreach ($cursos as $curso) { ?>
                             <div class="col">
                                 <div class="card">
-                                    <img src="../../assets/img/empresas/<?php echo $curso["miniatura"] ?>" class="card-img-top" alt="...">
+                                    <img src="../../uploads/cursos/<?php echo $curso["miniatura"] ?>" class="card-img-top" alt="...">
                                     <div class="card-body">
                                         <h5 class="card-title"><?php echo $curso["titulo_curso"]; ?></h5>
 										<h6>Duración en meses: <?php echo $curso['duracion']; ?></h6>
-                                        <p class="card-text">$ <?php echo $curso["precio"] ?></p><a href="editarCursos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-info">Editar</a>
+										<p class="card-text">Precio en dolares USD <?php echo $curso["dolares"] ?></p>
+                                        <p class="card-text">Precio en pesos $ <?php echo $curso["pesos"] ?></p><a href="editarCursos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-info">Editar</a>
 										<a href="../eliminarCursos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-danger">Eliminar</a>
 										<a href="verVideos.php?id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-warning">Ver videos</a>
 										<a href="agregarClases.php?id_empresa=<?php echo $id_empresa ?>&id_curso=<?php echo $curso["id"] ?>" style="margin-top:5px;" class="btn btn-success">Agregar Videos</a>

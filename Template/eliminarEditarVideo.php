@@ -24,7 +24,7 @@ if(isset($_POST['edit-btn'])){
         $tipo = 'V';
     }else if(isset($_POST['linkYoutube']) AND $_POST['linkYoutube'] != ''){
         $link = $_POST['linkYoutube'];
-        $tpo = 'Y';
+        $tipo = 'Y';
 
         parse_str( parse_url( $link, PHP_URL_QUERY ), $my_array_of_vars );
         
@@ -40,28 +40,49 @@ if(isset($_POST['edit-btn'])){
     //$descripcion = $_POST['viddesc'];
     $file = $_FILES['file1'];
     $fileName = $file['name'];
-    
+    $presentacion = $_POST['presentacion'];
     $titulo = $_POST['vidtitle'];
-    $descripcion = $_POST['viddesc'];
+    $descripcion = htmlspecialchars($_POST['viddesc'], ENT_QUOTES, 'UTF-8');
     $id = $_POST['id'];
     $id_curso = $_SESSION['id_curso'];
     //$id_empresa = $_SESSION['id_empresa'];
 
     $id_profesor = $_SESSION['id_profesor'];
 
-    //$sentenciaSQL = $conn->query("INSERT INTO videos (id_profesor,id_curso,id_empresa,id_video,tipo,titulo_video,descripcion,miniatura) VALUES ($id_profesor,$id_curso,$id_empresa,'$link','$tipo','$titulo','$descripcion','$fileName')");
+    //saco las datos
+    $conectar = $conn->query("SELECT * FROM videos WHERE id = $id");
+    $resultado = $conectar->fetch_assoc();
+    $imagen_vieja = $resultado['miniatura'];
+    $titulo_viejo = $resultado['titulo_video'];
+    $descripcion_viejo = $resultado['descripcion'];
+    $link_viejo = $resultado['id_video'];
+    $tipo_viejo = $resultado['tipo'];
+    $es_presentacion_viejo = $resultado['es_presentacion'];
     
-    if($fileName != $imagen AND $fileName != ''){
-        $sentenciaSQL = $conn->query("UPDATE videos SET id_video = '$link', titulo_video = '$titulo', miniatura = '$fileName', descripcion = '$descripcion', tipo = '$tipo' WHERE id = $id");
-    }else if($fileName == ''){
-        $sentenciaSQL = $conn->query("UPDATE videos SET id_video = '$link', titulo_video = '$titulo', descripcion = '$descripcion', tipo = '$tipo' WHERE id = $id");
+    if( ($fileName != $imagen_vieja AND $fileName != '')  AND ($presentacion == $es_presentacion_viejo) AND ($titulo == $titulo_viejo) AND ($descripcion == $descripcion_viejo) AND ($link == $link_viejo AND $tipo == $tipo_viejo) ){
+        $sentenciaSQL = $conn->query("UPDATE videos SET `miniatura` = '$fileName' WHERE `id` = $id");
+    }else if( ($presentacion != $es_presentacion_viejo) AND ($fileName == '') AND ($titulo == $titulo_viejo) AND ($descripcion == $descripcion_viejo) AND ($link == $link_viejo AND $tipo == $tipo_viejo) ){
+        $sentenciaSQL = $conn->query("UPDATE videos SET `es_presentacion` = '$presentacion' WHERE `id` = $id");
+    }else if( ($titulo != $titulo_viejo) AND ($presentacion == $es_presentacion_viejo) AND ($fileName == '') AND ($descripcion == $descripcion_viejo) AND ($link == $link_viejo AND $tipo == $tipo_viejo) ){
+        $sentenciaSQL = $conn->query("UPDATE videos SET `titulo_video` = '$titulo' WHERE `id` = $id");
+    }else if( ($descripcion != $descripcion_viejo) AND ($titulo == $titulo_viejo) AND ($presentacion == $es_presentacion_viejo) AND ($fileName == '') AND ($link == $link_viejo AND $tipo == $tipo_viejo) ){
+        $sentenciaSQL = $conn->query("UPDATE videos SET `descripcion` = '$descripcion' WHERE `id` = $id");
+    }else if( ($link != $link_viejo AND $tipo == $tipo_viejo) AND ($descripcion == $descripcion_viejo) AND ($titulo == $titulo_viejo) AND ($presentacion == $es_presentacion_viejo) AND ($fileName == '') ){ //cambio solo el link del video pero no el tipo
+        $sentenciaSQL = $conn->query("UPDATE videos SET `id_video` = '$link' WHERE `id` = $id");
+    }else if( ($link != $link_viejo AND $tipo != $tipo_viejo) AND ($descripcion == $descripcion_viejo) AND ($titulo == $titulo_viejo) AND ($presentacion == $es_presentacion_viejo) AND ($fileName == '') ){ //cambio el link y el tipo
+        $sentenciaSQL = $conn->query("UPDATE videos SET `id_video` = '$link',`tipo` = '$tipo'  WHERE `id` = $id");
+    }else{
+        if($fileName != $imagen_vieja AND $fileName != ''){
+            $sentenciaSQL = $conn->query("UPDATE videos SET `id_video` = '$link', `tipo` = '$tipo',`es_presentacion` = '$presentacion', `titulo_video` = '$titulo',`descripcion` = '$descripcion', `miniatura` = '$fileName'  WHERE `id` = $id");  
+        }else{
+            $sentenciaSQL = $conn->query("UPDATE videos SET `id_video` = '$link', `tipo` = '$tipo',`es_presentacion` = '$presentacion', `titulo_video` = '$titulo',`descripcion` = '$descripcion'  WHERE `id` = $id"); 
+        }
     }
 
     if($sentenciaSQL){
         header ('Location: /pablo/Template/profesor/verVideos.php');
-    }
-    else{
-        echo mysqli_error($conn);
+    }else{
+        header ('Location: /pablo/Template/profesor/verVideos.php');
     }
 
 }

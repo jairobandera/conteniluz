@@ -4,7 +4,7 @@ function habilitar(){
     let inputYoutube = document.getElementById('linkYoutube');
     let inputVimeo = document.getElementById('linkVimeo');
 
-    if(radioButton == 'vimeo'){
+    if(radioButton == 'V'){
         //document.getElementById('youtube').disabled = true;
         inputYoutube.disabled = true;
         inputYoutube.value = '';
@@ -15,3 +15,9 @@ function habilitar(){
         inputVimeo.value = '';
     }
 }
+
+
+
+
+
+

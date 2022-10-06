@@ -4,7 +4,7 @@ include '../../config.php';
 $conectado = conectar();
 
 $id_profesor = $_SESSION['id_profesor'];
-$resultado = $conectado->query("SELECT a.nombre,a.telefono, a.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.fecha_caducidad FROM pagos AS p, alumno AS a WHERE EXISTS(
+$resultado = $conectado->query("SELECT u.nombre,u.telefono, u.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.fecha_caducidad FROM pagos AS p, usuario AS u WHERE EXISTS(
 SELECT * FROM cursos AS c WHERE EXISTS(
 SELECT * FROM empresa AS e WHERE e.id = c.id_empresa AND p.id_curso = c.id AND c.id_profesor = $id_profesor))");
 $pagos = $resultado->fetch_all(MYSQLI_ASSOC);

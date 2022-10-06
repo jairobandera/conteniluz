@@ -93,14 +93,14 @@ include 'Template/head.php';
 													<h6 class="mb-0">Descripcion</h6>
 												</div>
 												<div class="col-sm-9">
-													<input type="text" name="viddesc" class="form-control" value="<?php echo $videos[0]['descripcion']; ?>" />
+													<textarea name="viddesc" class="form-control" rows="6" maxlength="300"><?php echo $videos[0]['descripcion']; ?></textarea>
 												</div>
 											</div>
 											<div class="row mb-3">
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-                                                    <h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" value="vimeo" <?php if($videos[0]['tipo'] == 'V'){ echo 'checked="checked"'; } ?>> Link Vimeo</h6>
+                                                    <h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" value="V" <?php if($videos[0]['tipo'] == 'V'){ echo 'checked="checked"'; } ?>> Link Vimeo</h6>
                                                 </div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkVimeo" id="linkVimeo" class="form-control" value="<?php if($videos[0]['tipo'] == 'V'){ echo $videos[0]['id_video']; } ?>" />
@@ -110,12 +110,23 @@ include 'Template/head.php';
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="youtube" <?php if($videos[0]['tipo'] == 'Y'){ echo 'checked="checked"'; } ?>> Link Youtube</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="Y" <?php if($videos[0]['tipo'] == 'Y'){ echo 'checked="checked"'; } ?>> Link Youtube</h6>
 												</div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkYoutube" id="linkYoutube" class="form-control" value="<?php if($videos[0]['tipo'] == 'Y'){ echo $videos[0]['id_video']; } ?>" />
 												</div>
 											</div>
+
+											<div class="row mb-3">
+												<div class="col-sm-3">
+													<h6 class="mb-0">Video de presentacion</h6>
+												</div>
+												<div class="col-sm-3">
+													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="Y" <?php if($videos[0]['es_presentacion'] == 'Y'){ echo 'checked="checked"'; } ?>> Si</h6>
+													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="N" <?php if($videos[0]['es_presentacion'] == 'N'){ echo 'checked="checked"'; } ?>> No</h6>
+												</div>
+											</div>
+
 											<div class="row mb-3">
 												<div class="col-sm-3">
 													<h6 for="inputProductDescription" class="form-label">Miniatura</h6>
