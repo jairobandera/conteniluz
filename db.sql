@@ -22,15 +22,13 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` int(11) DEFAULT NULL,
   `id_curso` int(11) DEFAULT NULL,
-  `nombre` varchar(50) DEFAULT NULL,
-  `apellido` varchar(50) DEFAULT NULL,
-  `telefono` varchar(50) DEFAULT NULL,
+  `pago` enum('Y','N') DEFAULT 'N',
   PRIMARY KEY (`id`),
   KEY `FK_alumno_cursos` (`id_curso`),
   KEY `FK_alumno_usuario` (`id_usuario`),
   CONSTRAINT `FK_alumno_cursos` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_alumno_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -40,15 +38,16 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   `id_empresa` int(11) NOT NULL DEFAULT 0,
   `id_profesor` int(11) NOT NULL DEFAULT 0,
   `titulo_curso` char(50) NOT NULL DEFAULT '0',
-  `miniatura` char(50) NOT NULL DEFAULT '0',
-  `precio` char(50) NOT NULL DEFAULT '0',
+  `miniatura` char(250) NOT NULL DEFAULT '0',
+  `dolares` char(50) NOT NULL DEFAULT '0',
+  `pesos` char(50) NOT NULL DEFAULT '0',
   `duracion` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `FK_cursos_empresas` (`id_empresa`),
   KEY `FK_cursos_profesor` (`id_profesor`) USING BTREE,
   CONSTRAINT `FK_cursos_empresas` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_cursos_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -57,29 +56,27 @@ CREATE TABLE IF NOT EXISTS `empresa` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` int(11) NOT NULL DEFAULT 0,
   `nombre_empresa` varchar(50) NOT NULL DEFAULT '0',
-  `miniatura` varchar(50) NOT NULL DEFAULT '0',
+  `miniatura` varchar(250) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
 -- Volcando estructura para tabla pablo.pagos
 CREATE TABLE IF NOT EXISTS `pagos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `payment_id` int(11) NOT NULL DEFAULT 0,
+  `payment_id` varchar(200) NOT NULL DEFAULT '0',
   `payment_type` varchar(150) NOT NULL DEFAULT '0',
-  `order_id` int(11) NOT NULL DEFAULT 0,
+  `order_id` varchar(200) NOT NULL DEFAULT '0',
   `id_alumno` int(11) NOT NULL DEFAULT 0,
   `id_curso` int(11) NOT NULL DEFAULT 0,
   `monto` int(11) NOT NULL DEFAULT 0,
   `fecha_pago` date NOT NULL,
   `fecha_caducidad` date NOT NULL,
   `status` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `FK_pagos_alumno` (`id_alumno`),
-  KEY `FK_pagos_cursos` (`id_curso`),
-  CONSTRAINT `FK_pagos_alumno` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+  `tipo` enum('PAYPAL','MERCADOPAGO') NOT NULL DEFAULT 'MERCADOPAGO',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -96,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `profesor` (
   KEY `FK_profesor_empresa` (`id_empresa`),
   CONSTRAINT `FK__usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_profesor_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -110,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `respaldos_videos` (
   `link` varchar(200) NOT NULL DEFAULT '0',
   `fecha` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -120,8 +117,11 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `usuario` varchar(50) NOT NULL DEFAULT '0',
   `pass` varchar(50) NOT NULL DEFAULT '0',
   `tipo` enum('USUARIO','ADMIN','PROFESOR') NOT NULL DEFAULT 'USUARIO',
+  `nombre` varchar(200) NOT NULL,
+  `apellido` varchar(200) NOT NULL,
+  `telefono` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -131,11 +131,12 @@ CREATE TABLE IF NOT EXISTS `videos` (
   `id_profesor` int(11) NOT NULL DEFAULT 0,
   `id_curso` int(11) NOT NULL DEFAULT 0,
   `id_empresa` int(11) NOT NULL DEFAULT 0,
-  `id_video` varchar(50) NOT NULL DEFAULT '0',
+  `id_video` varchar(150) NOT NULL DEFAULT '0',
   `tipo` enum('Y','V') NOT NULL DEFAULT 'V',
-  `titulo_video` varchar(50) NOT NULL DEFAULT '0',
-  `descripcion` varchar(50) NOT NULL DEFAULT '0',
-  `miniatura` varchar(50) NOT NULL DEFAULT '0',
+  `es_presentacion` enum('Y','N') NOT NULL DEFAULT 'N',
+  `titulo_video` varchar(150) NOT NULL DEFAULT '0',
+  `descripcion` varchar(500) NOT NULL DEFAULT '',
+  `miniatura` varchar(150) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `FK_videos_empresa` (`id_empresa`),
   KEY `FK_videos_cursos` (`id_curso`),
@@ -143,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `videos` (
   CONSTRAINT `FK_videos_cursos` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_videos_empresa` FOREIGN KEY (`id_empresa`) REFERENCES `empresa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_videos_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 

@@ -7,9 +7,9 @@ include 'Template/head.php';
 include '../../../config.php';//BD
 $conn = conectar();
 //traigo las empresas	
-$sql = "SELECT * FROM empresa";
+/*$sql = "SELECT * FROM empresa";
 $result = $conn->query($sql);
-$empresas = $result->fetch_all(MYSQLI_ASSOC);
+$empresas = $result->fetch_all(MYSQLI_ASSOC);*/
 
 //traigo los cursos
 $sql = "SELECT * FROM cursos";
@@ -131,16 +131,6 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 												<option  value="PROFESOR" selected>Profesor</option>
 												<option value="USUARIO">Usuario</option>	
                                                 <option value="ADMIN">Administrador</option>												
-											</select>
-										</div>
-
-										<div class="input-group mb-3">
-											<label class="input-group-text" for="tipoEmpresa" id="labelEmpresa"><h6>Empresa</h6></label>
-											<select name="tipoEmpresa" class="form-select" id="tipoEmpresa" style="background-color:rgb(0 0 0 / 15%); !important">							
-												<option  value="sinEmpresa" selected>Selecione una empresa</option>	
-												<?php foreach($empresas as $empresa): ?>)
-													<option value="<?php echo $empresa['id']; ?>"><?php echo $empresa['nombre_empresa']; ?></option>
-												<?php endforeach; ?>
 											</select>
 										</div>
 

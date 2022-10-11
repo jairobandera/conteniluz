@@ -6,7 +6,7 @@ $conectado = conectar();
 isset($_GET['id_empresa']) ? $id_empresa = $_GET['id_empresa'] : $id_empresa = '';
 
 //Obtengo los datos de los profesores pertenecientes a la empresa
-$sentenciaSQL = $conectado->query("SELECT * FROM profesor WHERE id_empresa = $id_empresa");
+$sentenciaSQL = $conectado->query("SELECT p.id,p.id_usuario,p.nombre,p.nombre,p.apellido,p.telefono, e.id AS id_empresa, e.id_usuario, e.nombre_empresa, e.miniatura FROM profesor AS p, empresa AS e WHERE e.id = $id_empresa AND e.id_usuario = p.id_usuario");
 $profesores = $sentenciaSQL->fetch_all(MYSQLI_ASSOC);
 
 

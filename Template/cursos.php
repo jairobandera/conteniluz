@@ -5,10 +5,13 @@ $conectado = conectar();
 
 //Obtengo la localizacion y guardo en cookies
 if(!isset($_COOKIE["pais"])){
-	$geo = geoLocalizacion();
-	setcookie("pais", $geo, time() + ( 365 * 24 * 60 * 60)); //1 año
-}	
-isset(($_COOKIE["pais"])) ? $pais = $_COOKIE["pais"] : $pais = "Argentina";
+    $geo = geoLocalizacion();
+    setcookie("pais", $geo, time() + ( 365 * 24 * 60 * 60)); //1 año
+}else if(isset($_COOKIE["pais"])){
+    $pais = $_COOKIE["pais"];
+}else{
+    $pais = "Argentina";
+}
 
 unset($_SESSION['id_curso']);
 
@@ -24,19 +27,23 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 	$id_usuario = $_SESSION['id_usuario'];
 	/*$resultado = $conectado->query("SELECT c.id FROM cursos AS c WHERE EXISTS(
 	SELECT * FROM alumno AS a, usuario AS u WHERE a.id_curso = c.id AND u.id = $id_usuario AND u.tipo = 'USUARIO')");*/
-	echo $id_usuario = $_SESSION['id_usuario'];
+	$id_usuario = $_SESSION['id_usuario'];
 	$resultado = $conectado->query("SELECT c.id, a.pago FROM cursos AS c, alumno AS a
 	WHERE a.id_curso = c.id AND a.id_usuario = $id_usuario");
 	$cursos2 = $resultado->fetch_all(MYSQLI_ASSOC);
 	//$resultado= $resultado->fetch_assoc();
 	$array = array();
+    $arrayPagos = array();
 	if($cursos2){
 			foreach($cursos2 as $curso2){
 				$id_curso = $curso2['id'];
 				$pago = $curso2['pago'];
 				array_push($array, $id_curso);
+                array_push($arrayPagos, $pago);
 			}
-		}	
+		}
+        
+        //var_dump($array);
 }
 
 
@@ -115,23 +122,15 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
             <!-- /.vlt-hero-title-holder -->
             <main class="vlt-main-holder vlt-main-padding">
                 <div class="container">
-                    <div class="vlt-portfolio-grid-filters">
-                        <div data-filter="*" class="cbp-filter-item cbp-filter-item-active"><span>All</span></div>
-                        <?php foreach($cursos as $curso): $searchString = " "; $replaceString = "";?>
-                        <div data-filter=".<?php echo str_replace($searchString, $replaceString,$curso["titulo_curso"]); ?>"
-                            class="cbp-filter-item"><span><?php echo $curso["titulo_curso"] ?></span>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
                     <div class="vlt-portfolio-grid cubeportfolio" id="cubeportfolio">
                         <?php
       						foreach ($cursos as $curso) { ?>
                         <article
-                            class="cbp-item vlt-portfolio-grid-item vlt-portfolio-style2 <?php echo str_replace($searchString, $replaceString,$curso["titulo_curso"]); ?>">
+                            class="cbp-item vlt-portfolio-grid-item vlt-portfolio-style2">
                             <div class="vlt-portfolio-grid-image">
                                 <a class="vlt-portfolio-grid-link"
                                     href="videos.php?id_curso=<?php echo $curso["id"] ?>">
-                                    <img src="../assets/img/empresas/<?php echo $curso["miniatura"] ?>" alt="">
+                                    <img src="../uploads/cursos/<?php echo $curso["miniatura"] ?>" alt="">
                                 </a>
                             </div>
                             <div class="vlt-portfolio-grid-content">
@@ -156,11 +155,11 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 												//$concatenar = '<a href="../../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&pecio='.$curso["pesos"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
 												//echo $concatenar;
 												$moneda = 'pesos';
-												$concatenar = '<a href="../../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
+												$concatenar = '<a href="../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
 												echo $concatenar;
 											}else{
 												$moneda = 'dolares';
-												$concatenar = '<a href="../../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["dolares"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["dolares"].'- Comprar</a>';
+												$concatenar = '<a href="../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["dolares"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["dolares"].'- Comprar</a>';
 												echo $concatenar;
 											}
 										}

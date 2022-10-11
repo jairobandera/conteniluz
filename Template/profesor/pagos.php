@@ -5,8 +5,7 @@ $conectado = conectar();
 
 $id_profesor = $_SESSION['id_profesor'];
 $resultado = $conectado->query("SELECT u.nombre,u.telefono, u.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.fecha_caducidad FROM pagos AS p, usuario AS u WHERE EXISTS(
-SELECT * FROM cursos AS c WHERE EXISTS(
-SELECT * FROM empresa AS e WHERE e.id = c.id_empresa AND p.id_curso = c.id AND c.id_profesor = $id_profesor))");
+	SELECT * FROM alumno AS a WHERE a.id_usuario = u.id AND a.id_curso = p.id_curso AND a.id = p.id_alumno)");
 $pagos = $resultado->fetch_all(MYSQLI_ASSOC);
 
 
@@ -91,7 +90,7 @@ include 'Template/head.php';
 													<td><?php echo $pago['nombre'].' '.$pago['apellido']; ?></td>
 													<td><?php echo $pago['telefono']; ?></td>
 													<td><?php echo $pago['payment_type']; ?></td>
-													<td <?php if($pago['status'] == 'approved'){ echo 'style="background-color:#32a840;"';
+													<td <?php if($pago['status'] == 'approved' OR $pago['status'] =='COMPLETED'){ echo 'style="background-color:#32a840;"';
 
 													}else if($pago['status'] == 'cancelled'){
 														echo 'style="background-color:#f2493d;"';

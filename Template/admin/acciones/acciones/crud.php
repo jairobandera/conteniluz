@@ -40,6 +40,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
     }
 
 }else if(isset($_POST['agregarCuentas-btn'])){
+
     $nombre = $_POST['nombrePersona'];
     $apellido = $_POST['apellidoPersona'];
     $telefono = $_POST['telefonoPersona'];
@@ -49,7 +50,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
     $tipo = $_POST['tipoPersona'];
     $tipo = strtoupper($tipo);
 
-    $idEmpresa = $_POST['tipoEmpresa'];
+    //$idEmpresa = $_POST['tipoEmpresa'];
     $idCurso = $_POST['tipoCurso'];
 
     $sentenciaSQL = $conn->query("INSERT INTO usuario (usuario,pass,tipo,nombre,apellido,telefono) VALUES ('$usuario','$pass','$tipo','$nombre','$apellido','$telefono')");
@@ -64,7 +65,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
         if($tipo == 'USUARIO'){
             $sentenciaSQL = $conn->query("INSERT INTO alumno (id_usuario, id_curso,pago) VALUES ($id,$idCurso,'N')");
         }else if($tipo == 'PROFESOR'){
-            $sentenciaSQL = $conn->query("INSERT INTO profesor (id_empresa,id_usuario,nombre,apellido,telefono) VALUES ($idEmpresa,$id,'$nombre','$apellido','$telefono')");
+            $sentenciaSQL = $conn->query("INSERT INTO profesor (id_usuario,nombre,apellido,telefono) VALUES ($id,'$nombre','$apellido','$telefono')");
         }
 
         header ('Location: ../../usuarios.php');
@@ -135,7 +136,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
     $fileName = $file['name'];
     $idEmpresa = $_POST['idEmpresa'];
     $idProfesor = $_POST['idProfesor'];
-    $moneda = $_POST['moneda'];
+    //$moneda = $_POST['moneda'];
 
     //quitar espacios en blanco
     $fileName = preg_replace('/\s+/', '', $fileName);

@@ -21,22 +21,12 @@ function habilitarPersona(){
     let combo = document.getElementById("tipoPersona");
     let select = combo.options[combo.selectedIndex].text;
 
-
     if(select == 'Usuario'){
-        document.getElementById('tipoEmpresa').style.display = 'none';
-        document.getElementById('labelEmpresa').style.display = 'none';
         document.getElementById('tipoCurso').style.display = 'block';
         document.getElementById('labelCurso').style.display = 'block';
-    }else if(select == 'Profesor'){
+    }else{
         document.getElementById('tipoCurso').style.display = 'none';
         document.getElementById('labelCurso').style.display = 'none';
-        document.getElementById('tipoEmpresa').style.display = 'block';
-        document.getElementById('labelEmpresa').style.display = 'block';
-    }else if(select == 'Administrador'){
-        document.getElementById('tipoCurso').style.display = 'none';
-        document.getElementById('labelCurso').style.display = 'none';
-        document.getElementById('tipoEmpresa').style.display = 'none';
-        document.getElementById('labelEmpresa').style.display = 'none';
     }
 }
 

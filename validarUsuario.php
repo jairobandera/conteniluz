@@ -87,7 +87,7 @@ function tipo(){
         }else if($_SESSION['tipo'] == 'PROFESOR'){
             $usuario = $_POST['usuario'];
             $password = md5($_POST['password']);
-            $sql = "SELECT u.id, u.nombre, u.apellido, u.telefono, p.id_empresa, p.id as idProfesor FROM usuario AS u, profesor AS p WHERE usuario = '$usuario' AND pass = '$password'";
+            $sql = "SELECT u.id, u.nombre, u.apellido, u.telefono, e.id AS id_empresa, p.id as idProfesor FROM usuario AS u, profesor AS p, empresa AS e WHERE usuario = '$usuario' AND pass = '$password'";
             $resultado = mysqli_query($conectado, $sql);
             $fila = mysqli_fetch_assoc($resultado);
             $_SESSION['id_profesor'] = $fila['idProfesor'];

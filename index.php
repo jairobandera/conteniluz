@@ -78,24 +78,15 @@ $empresas = $resultado->fetch_all(MYSQLI_ASSOC);
             <!-- /.vlt-hero-title-holder -->
             <main class="vlt-main-holder vlt-main-padding">
                 <div class="container">
-                    <div class="vlt-portfolio-grid-filters">
-                        <div data-filter="*" class="cbp-filter-item cbp-filter-item-active"><span>All</span></div>
-                        <?php foreach($empresas as $empresa): $searchString = " "; $replaceString = "";?>
-                        <div data-filter=".<?php echo str_replace($searchString, $replaceString,$empresa["nombre_empresa"]); ?>"
-                            class="cbp-filter-item"><span><?php echo $empresa["nombre_empresa"]; ?></span>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
                     <div class="vlt-portfolio-grid cubeportfolio" id="cubeportfolio">
                         <?php
-							$searchString = " "; $replaceString = "";
       						foreach ($empresas as $empresa) { ?>
                         <article
-                            class="cbp-item vlt-portfolio-grid-item vlt-portfolio-style2 <?php echo str_replace($searchString, $replaceString,$empresa["nombre_empresa"]); ?>">
+                            class="cbp-item vlt-portfolio-grid-item vlt-portfolio-style2">
                             <div class="vlt-portfolio-grid-image">
                                 <a class="vlt-portfolio-grid-link"
                                     href="Template/cursos.php?id_empresa=<?php echo $empresa["id"] ?>">
-                                    <img src="assets/img/empresas/<?php echo $empresa["miniatura"] ?>" alt="">
+                                    <img src="uploads/empresas/<?php echo $empresa["miniatura"] ?>" alt="">
                                 </a>
                             </div>
                             <div class="vlt-portfolio-grid-content">
