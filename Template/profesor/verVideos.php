@@ -90,7 +90,7 @@ include 'Template/head.php';
 							<form action="../eliminarEditarVideo.php" method="POST" enctype="multipart/form-data">
 								<div class="col">
 									<div class="card">
-										<img src="../../assets/img/cursos/<?php echo $video["miniatura"] ?>" class="card-img-top" alt="...">
+										<img src="../../uploads/videos/miniaturas/<?php echo $video["miniatura"] ?>" class="card-img-top" alt="...">
 										<div class="card-body">
 											<h5 class="card-title"><?php echo $video["titulo_video"] ?></h5>
 											<p class="card-title"><?php echo $video["descripcion"] ?></p>

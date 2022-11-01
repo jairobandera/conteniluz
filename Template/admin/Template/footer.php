@@ -6,8 +6,7 @@
 	<!-- sweetalerts2-->
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="js.js"></script>
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
 	<!--end wrapper-->
 	<!-- Bootstrap JS -->
 	<script src="../../assets/assets/js/bootstrap.bundle.min.js"></script>
@@ -18,6 +17,7 @@
 	<script src="../../assets/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
 	<!--app JS-->
 	<script src="../../assets/assets/js/app.js"></script>
+	<script src="js.js"></script>
 </body>
 
 </html>

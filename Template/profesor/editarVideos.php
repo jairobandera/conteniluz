@@ -57,10 +57,10 @@ include 'Template/head.php';
 					</div>
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
+							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->
 							<div class="user-info ps-3">
-								<p class="user-name mb-0">Pauline Seitz</p>
-								<p class="designattion mb-0">Web Designer</p>
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
 							</div>
 						</a>
 					</div>
@@ -137,7 +137,7 @@ include 'Template/head.php';
 											</div>
                                             <div class="row mb-sm-3">
                                                 <div class="col-sm-3">
-                                                    <img src="../../assets/img/cursos/<?php echo $videos[0]['miniatura']; ?>" width="100px" style="margin-bottom:5px;" alt="">
+                                                    <img src="../../uploads/videos/miniaturas/<?php echo $videos[0]['miniatura']; ?>" width="100px" style="margin-bottom:5px;" alt="">
                                                 </div>
                                             </div>
 											<button type="submit" name="upload-btn" class="btn btn-success"><i class=""></i>Editar</button>

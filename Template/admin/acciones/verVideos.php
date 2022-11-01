@@ -93,10 +93,6 @@ if(isset($_GET['id_curso']) and isset($_GET['id_empresa']) and isset($_GET['id_p
 													<?php } ?>
 												</div>
 												<div class="vlt-post-content">
-													<!--<div class="vlt-post-meta">
-														<span class="vlt-post-author"><i class="fa fa-fw fa-user"></i><a href="#">VLThemes</a></span>
-														<span class="vlt-post-date"><i class="fa fa-fw fa-clock-o"></i>July 22, 2017</span>
-													</div>-->
 													<h3 class="vlt-post-title"><a href="blog-post-single.html"><?php echo $curso["titulo_video"] ?></a></h3>
 													<div class="vlt-post-excerpt">
 														<p><?php echo $curso["descripcion"] ?></p>

@@ -64,7 +64,7 @@ if(isset($_POST['upload-btn'])){
         $tipo = 'V';
     }else if(isset($_POST['linkYoutube']) AND $_POST['linkYoutube'] != ''){
         $link = $_POST['linkYoutube'];
-        $tpo = 'Y';
+        $tipo = 'Y';
 
         parse_str( parse_url( $link, PHP_URL_QUERY ), $my_array_of_vars );
         
@@ -88,7 +88,27 @@ if(isset($_POST['upload-btn'])){
 
     $id_profesor = $_SESSION['id_profesor'];
 
-    $sentenciaSQL = $conn->query("INSERT INTO videos (id_profesor,id_curso,id_empresa,id_video,tipo,es_presentacion,titulo_video,descripcion,miniatura) VALUES ($id_profesor,$id_curso,$id_empresa,'$link','$tipo','$presentacion','$titulo','$descripcion','$fileName')");
+    //quitar espacios en blanco
+    $fileName = preg_replace('/\s+/', '', $fileName);
+    $fileName = strtolower($fileName);
+    $fileName = str_replace(" ", "", $fileName);
+    
+    //muevo la imagen a la carpeta con el nombre con la fecha y hora actual y el nombre de la imagen y la extencion
+    $ruta = RUTAVIDEOSMINIATURAS . date("Y-m-d-H-i-s") . $fileName;
+
+    //Compruebo si exise una imagen con el mismo nombre 
+    if(file_exists($ruta)){
+        //si existe le agrego un numero al fina
+    $ruta = RUTAVIDEOSMINIATURAS . date("Y-m-d-H-i-s") . rand(0, 100) . $fileName;
+    move_uploaded_file($file['tmp_name'], $ruta);
+    }else{
+        //muevo la imagen a la carpeta
+        move_uploaded_file($file['tmp_name'], $ruta);
+    }        
+    //obtengo la ruta sin RUTAEMPRESAS
+    $ruta = str_replace(RUTAVIDEOSMINIATURAS, "", $ruta);
+
+    $sentenciaSQL = $conn->query("INSERT INTO videos (id_profesor,id_curso,id_empresa,id_video,tipo,es_presentacion,titulo_video,descripcion,miniatura) VALUES ($id_profesor,$id_curso,$id_empresa,'$link','$tipo','$presentacion','$titulo','$descripcion','$ruta')");
     
     if($sentenciaSQL){
         header ('Location: /pablo/Template/profesor/verVideos.php');

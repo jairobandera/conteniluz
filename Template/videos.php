@@ -89,15 +89,15 @@ if(isset($_GET['id_curso'])){
 												<div class="vlt-post-thumbnail">
 													<?php if($curso["tipo"] == 'V'){ ?>
 														<?php if ($curso === reset($cursos)  AND ($curso['es_presentacion'] == 'Y')) {?>															
-															<iframe src="https://player.vimeo.com/video/<?php echo $curso["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+															<iframe src="https://player.vimeo.com/video/<?php echo $curso["id_video"]; ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 														<?php }else{ ?>
-															<img src="../assets/img/cursos/<?php echo $curso["miniatura"]; ?>" alt="" width="900" height="506">
+															<img src="../uploads/videos/miniaturas/<?php echo $curso["miniatura"]; ?>" alt="" width="900" height="506">
 														<?php } ?>
 													<?php }else{ ?>
 														<?php if ($curso === reset($cursos)  AND ($curso['es_presentacion'] == 'Y')) {?>
-															<iframe src="http://www.youtube.com/embed/<?php echo $curso["id_video"] ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+															<iframe src="http://www.youtube.com/embed/<?php echo $curso["id_video"]; ?>" width="900" height="506" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 														<?php }else{ ?>
-															<img src="../assets/img/cursos/<?php echo $curso["miniatura"]; ?>" alt="" width="900" height="506">
+															<img src="../uploads/videos/miniaturas/<?php echo $curso["miniatura"]; ?>" alt="" width="900" height="506">
 														<?php } ?>
 													<?php } ?>
 												</div>

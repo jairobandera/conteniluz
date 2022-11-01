@@ -37,20 +37,20 @@ include 'Template/head.php';
 			<ul class="metismenu" id="menu">
 				<li>
 					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+						<div class="parent-icon"><img src="../../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
 						<div class="menu-title">Panel administrador</div>
 					</a>
 					<ul>
-						<li> <a href="agregarEmpresas.php"><i class="bx bx-right-arrow-alt"></i>Agregar Empresas</a>
+					<li> <a href="agregarEmpresas.php"><img src="../../../assetsNuevo/iconos/mas2.gif" width="40px" height="">Agregar Empresas</a>
 						</li>
-						<li> <a href="../pagos.php"><i class="bx bx-right-arrow-alt"></i>Pagos</a>
+						<li> <a href="../pagos.php"><img src="../../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
 						</li>
-                        <li> <a href="cuentas.php"><i class="bx bx-right-arrow-alt"></i>Crear Cuentas</a>
+                        <li> <a href="cuentas.php"><img src="../../../assetsNuevo/iconos/cuentas2.gif" width="40px" height="">Crear Cuentas</a>
 						</li>
-						<li> <a href="../usuarios.php"><i class="bx bx-right-arrow-alt"></i>Ver Cuentas</a>
+						<li> <a href="../usuarios.php"><img src="../../../assetsNuevo/iconos/pass2.gif" width="40px" height="">Ver Cuentas</a>
 						</li>
-						<li><a href="../cerrar.php"><i class="bx bx-right-arrow-alt"></i>Cerrar Sesion</a></li>
+						<li><a href="../../cerrar.php"><img src="../../../assetsNuevo/iconos/exit2.gif" width="40px" height="">Cerrar Sesion</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -65,7 +65,7 @@ include 'Template/head.php';
 					</div>
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->
+							<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">	
 							<div class="user-info ps-3">
                                 <p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
@@ -78,7 +78,7 @@ include 'Template/head.php';
 		<!--end header -->
         <div class="page-wrapper">
 			<div class="page-content">
-                <h6 class="mb-0 text-uppercase">Listado de cursos</h6>
+                <h6 class="mb-0 text-uppercase"><img src="../../../assetsNuevo/iconos/cursos2.gif" width="40px" height="">	 Listado de cursos</h6>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">						
 						<?php
 							foreach ($videos as $video) { ?>
@@ -93,13 +93,25 @@ include 'Template/head.php';
                                             <input type="hidden" name="id_profesor" value="<?php echo $id_profesor; ?>">
                                             <input type="hidden" name="id_empresa" value="<?php echo $id_empresa; ?>">
                                             <input type="hidden" name="id_curso" value="<?php echo $id_curso; ?>">
-											<button type="submit" name="editVideo-btn" class="btn btn-info"><i class=""></i>Editar</button>
-											<button type="submit" name="deleteVideo-btn" class="btn btn-danger"><i class=""></i>Eliminar</button>
+											<button type="submit" name="editVideo-btn" class="btn btn-info"><img src="../../../assetsNuevo/iconos/editar2.gif" width="40px" height="">	Editar</button>
+											<button type="submit" name="deleteVideo-btn" class="btn btn-danger"><img src="../../../assetsNuevo/iconos/borrar2.gif" width="40px" height="">	Eliminar</button>
 										</div>
 									</div>
 								</div>
 							</form>
 						<?php } ?>
+						<?php
+						if(isset($_SESSION['success'])){
+							echo '<script>alertaEditarVideos(1);</script>'; 
+							unset($_SESSION['success']);
+						}else{
+							if(isset($_SESSION['error'])){
+								echo '<script>alertaEditarVideos(2);</script>';                                                   
+								echo '<div class="alert alert-danger" style="color:red;" role="alert">'.$_SESSION['error'].'</div>';
+								unset($_SESSION['error']);
+							}
+						}
+					?>
                     </div>               
             </div>
         </div>

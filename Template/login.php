@@ -20,19 +20,22 @@ session_start();
 		}
 	}
 }*/
-/*if(!isset($_SESSION['id_empresa'])){
-
-}*/
+if(isset($_SESSION['id_empresa'])){
+    $id_empresa = $_SESSION['id_empresa'];
+}
 
 if(isset($_SESSION['tipo'])){
 	if($_SESSION['tipo'] == 'ADMIN'){
 		header('Location: admin/index.php');
 	}else if($_SESSION['tipo'] == 'USUARIO'){
-			header('Location: alumno/index.php');
+			//header('Location: alumno/index.php?id_empresa='.$id_empresa);
+            echo '<script>window.location.href = "alumno/index.php?id_empresa='.$id_empresa.'";</script>';
 	}else if($_SESSION['tipo'] == 'PROFESOR'){
-			header('Location: profesor/index.php');
+			//header('Location: profesor/index.php');
+            echo '<script>window.location.href = "profesor/index.php";</script>';
 	}else{
-			header('Location: index.php');
+			//header('Location: index.php');
+            echo '<script>window.location.href = "index.php";</script>';
 	}
 }
 
@@ -55,6 +58,12 @@ if(isset($_SESSION['tipo'])){
     <link href="../assets/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/assets/css/bootstrap-extended.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!--Seet alert-->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/jsSweetAlert/sa.js"></script>
+    <!--Jquery-->
+    <script src="../assets/assets/js/jquery.min.js"></script>
+
     <link href="../assets/assets/css/app.css" rel="stylesheet">
     <link href="../assets/assets/css/icons.css" rel="stylesheet">
     <title>Iniciar sesion</title>
@@ -74,17 +83,18 @@ if(isset($_SESSION['tipo'])){
                             <div class="card-body">
                                 <div class="border p-4 rounded">
                                     <div class="text-center">
-                                        <h3 class="">Iniciar sesion</h3>
+                                        <h3 class="">Identifícate</h3>
+                                        <img src="../assetsNuevo/iconos/huella.gif" width="50%" height="">
                                     </div>
                                     <div class="form-body">
                                         <form class="row g-3" method="POST" action="../validarUsuario.php">
                                             <div class="col-12">
-                                                <label for="inputEmailAddress" class="form-label">Usuario</label>
+                                                <label for="inputEmailAddress" style="font-size:25px;" class="form-label"><img src="../assetsNuevo/iconos/usuario.gif" width="50px" height="50px"><b>USUARIO</b></label>
                                                 <input type="text" class="form-control" id="usuario" name="usuario"
                                                     placeholder="Ingrese su usuario" autocomplete="off">
                                             </div>
                                             <div class="col-12">
-                                                <label for="inputChoosePassword" class="form-label">Password</label>
+                                                <label for="inputChoosePassword" style="font-size:25px;" class="form-label"><img src="../assetsNuevo/iconos/pass.gif" width="50px" height="50px"><b>Password</b></label>
                                                 <div class="input-group" id="show_hide_password">
                                                     <input type="password" class="form-control border-end-0"
                                                         id="password" name="password" placeholder="Enter Password"
@@ -100,8 +110,15 @@ if(isset($_SESSION['tipo'])){
                                             </div>
                                             <div class="col-12">
                                                 <div class="d-grid">
-                                                    <button type="submit" name="login" class="btn btn-light"><i
-                                                            class="bx bxs-lock-open"></i>Inisiar sesion</button>
+                                                    <?php 
+                                                        if(isset($_SESSION['error'])){
+                                                            echo '<script>alertaLogin();</script>';                                                            
+                                                            echo '<div class="alert alert-danger" style="color:red;" role="alert">'.$_SESSION['error'].'</div>';
+                                                            unset($_SESSION['error']);
+                                                            unset($_SESSION['success']);
+                                                        }
+                                                    ?>
+                                                    <button type="submit" name="login" class="btn btn-light"><img src="../assetsNuevo/iconos/candado.gif" width="30px" height="">Inisiar sesion</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -116,11 +133,6 @@ if(isset($_SESSION['tipo'])){
         </div>
     </div>
     <!--end wrapper-->
-
-
-
-    <!--plugins-->
-    <script src="../assets/assets/js/jquery.min.js"></script>
     <!--Password show & hide js -->
     <script>
     $(document).ready(function() {
@@ -138,6 +150,7 @@ if(isset($_SESSION['tipo'])){
         });
     });
     </script>
+
 </body>
 
 </html>

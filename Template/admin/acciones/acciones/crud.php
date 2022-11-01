@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../../../../config.php';//BD
 $conn = conectar();
 
@@ -33,11 +34,19 @@ if(isset($_POST['agregarEmpresas-btn'])){
     $sentenciaSQL = $conn->query("INSERT INTO empresa (id_usuario,nombre_empresa,miniatura) VALUES ($idUsuario,'$nombreEmpresa','$ruta')");
     
     if($sentenciaSQL){
-        header ('Location: ../../admin.php');
+        if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+            $_SESSION['success'] = 'Empresa creada con exito';
+            header ('Location: ../../admin.php');
+        }else{
+            $_SESSION['error'] = 'Error al crear la empresa';
+            header ('Location: ../../admin.php');
+        }        
     }
     else{
         echo mysqli_error($conn);
     }
+
+    
 
 }else if(isset($_POST['agregarCuentas-btn'])){
 
@@ -68,7 +77,14 @@ if(isset($_POST['agregarEmpresas-btn'])){
             $sentenciaSQL = $conn->query("INSERT INTO profesor (id_usuario,nombre,apellido,telefono) VALUES ($id,'$nombre','$apellido','$telefono')");
         }
 
-        header ('Location: ../../usuarios.php');
+        if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+            $_SESSION['success'] = 'Cuenta creada con exito';
+            header ('Location: ../../usuarios.php');
+        }else{
+            $_SESSION['error'] = 'Error al crear la cuenta';
+            header ('Location: ../../usuarios.php');
+        }
+        
     }
     else{
         echo mysqli_error($conn);
@@ -110,7 +126,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
             move_uploaded_file($file['tmp_name'], $ruta);
         }else{
                 //muevo la imagen a la carpeta
-            unlink(RUTAEMPRESAS . $empresa['miniatura']);
+            //unlink(RUTAEMPRESAS . $empresa['miniatura']);
             move_uploaded_file($file['tmp_name'], $ruta);
         }        
         //obtengo la ruta sin RUTAEMPRESAS
@@ -122,7 +138,13 @@ if(isset($_POST['agregarEmpresas-btn'])){
     }
     
     if($sentenciaSQL){
-        header ('Location: ../editarEmpresas.php?id_empresa='.$idEmpresa);
+        if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+            $_SESSION['success'] = 'Empresa actualizada con exito';
+            header ('Location: ../editarEmpresas.php?id_empresa='.$idEmpresa);
+        }else{
+            $_SESSION['error'] = 'Error al actualizar la empresa';
+            header ('Location: ../editarEmpresas.php?id_empresa='.$idEmpresa);
+        }
     }
     else{
         echo mysqli_error($conn);
@@ -161,10 +183,16 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
     //inserto el curso
     $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,dolares,pesos,duracion) VALUES ($idEmpresa,$idProfesor,'$titulo','$ruta','$precioDolares',$precioPesos,'$duracion')");
+    
     if($sentenciaSQL){
-        header ('Location: ../../admin.php');
-    }
-    else{
+        if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+            $_SESSION['success'] = 'Curso creado con exito';
+            header ('Location: ../../admin.php');
+        }else{
+            $_SESSION['error'] = 'Error al crear el curso';
+            header ('Location: ../../admin.php');
+        }        
+    }else{
         echo mysqli_error($conn);
     }
 
@@ -175,7 +203,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
         $tipo = 'V';
     }else if(isset($_POST['linkYoutube']) AND $_POST['linkYoutube'] != ''){
         $link = $_POST['linkYoutube'];
-        $tpo = 'Y';
+        $tipo = 'Y';
 
         parse_str( parse_url( $link, PHP_URL_QUERY ), $my_array_of_vars );
             
@@ -217,12 +245,14 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
     $sentenciaSQL = $conn->query("INSERT INTO videos (id_profesor,id_curso,id_empresa,id_video,tipo,es_presentacion,titulo_video,descripcion,miniatura) VALUES ($id_profesor,$id_curso,$id_empresa,'$link','$tipo','$presentacion','$titulo','$descripcion','$ruta')");
     
-    if($sentenciaSQL){
+    if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+        $_SESSION['success'] = 'Video agregado con exito';
+        header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+    }else{
+        $_SESSION['error'] = 'Error al agregar video';
         header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
     }
-    else{
-        echo mysqli_error($conn);
-    }
+
 }else if(isset($_POST['deleteVideo-btn'])){
     
     if(isset($_POST['id_curso']) and isset($_POST['id_empresa']) and isset($_POST['id_profesor'])){
@@ -243,7 +273,14 @@ if(isset($_POST['agregarEmpresas-btn'])){
         $id_empresa = $_POST['id_empresa'];
     }  
     $id = $_POST['id'];
-    header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+
+    if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+        $_SESSION['success'] = 'Video editado con exito';
+        header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+    }else{
+        $_SESSION['error'] = 'Error al editar video';
+        header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+    }
 
 }else if(isset($_POST['updateVideo-btn'])){
 
@@ -328,9 +365,11 @@ if(isset($_POST['agregarEmpresas-btn'])){
         }
     }
 
-    if($sentenciaSQL){
+    if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+        $_SESSION['success'] = 'Video editado con exito';
         header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }else{
+        $_SESSION['error'] = 'Error al editar video';
         header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }
 
@@ -385,9 +424,14 @@ if(isset($_POST['agregarEmpresas-btn'])){
     }
     
     if($sentenciaSQL){
-        header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
-    }
-    else{
+        if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
+            $_SESSION['success'] = 'Curso creado con exito';
+            header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+        }else{
+            $_SESSION['error'] = 'Error al crear el curso';
+            header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+        }        
+    }else{
         echo mysqli_error($conn);
     }
 

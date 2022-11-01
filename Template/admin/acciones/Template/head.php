@@ -14,6 +14,9 @@
 	<!-- loader-->
 	<link href="../../../assets/assets/css/pace.min.css" rel="stylesheet" />
 	<script src="../../../assets/assets/js/pace.min.js"></script>
+	<!--Seet alert-->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="../../../assets/jsSweetAlert/sa.js"></script>
 	<!-- Bootstrap CSS -->
 	<link href="../../../assets/assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../../../assets/assets/css/bootstrap-extended.css" rel="stylesheet">

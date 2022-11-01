@@ -13,9 +13,15 @@ SELECT * FROM profesor AS p WHERE c.id_profesor = '$id_profesor')");
 
 $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
 
-$id_curso = $cursos[0]['id'];
-$id_empresa = $cursos[0]['id_empresa'];
-$id_usuario = $_SESSION['id_usuario'];
+if($cursos){
+	$id_curso = $cursos[0]['id'];
+	$id_empresa = $cursos[0]['id_empresa'];
+	$id_usuario = $_SESSION['id_usuario'];
+}else{
+	$id_empresa = $_SESSION['id_empresa_profesor'];
+	$id_usuario = $_SESSION['id_usuario'];
+}
+
 
 
 include 'Template/head.php';

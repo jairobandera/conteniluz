@@ -36,18 +36,18 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 			<ul class="metismenu" id="menu">
 				<li>
 					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+						<div class="parent-icon"><img src="../../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
 						<div class="menu-title">Panel administrador</div>
 					</a>
 					<ul>
-                        <li> <a href="../admin.php"><i class="bx bx-right-arrow-alt"></i>Ver Empresas</a>
+                        <li> <a href="../admin.php"><img src="../../../assetsNuevo/iconos/empresas2.gif" width="40px" height="">Ver Empresas</a>
 						</li>
-						<li> <a href="../pagos.php"><i class="bx bx-right-arrow-alt"></i>Pagos</a>
+						<li> <a href="../pagos.php"><img src="../../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
 						</li>
-                        <li> <a href="../usuarios.php"><i class="bx bx-right-arrow-alt"></i>Ver Cuentas</a>
+                        <li> <a href="../usuarios.php"><img src="../../../assetsNuevo/iconos/pass2.gif" width="40px" height="">Ver Cuentas</a>
 						</li>
-						<li><a href="../../cerrar.php"><i class="bx bx-right-arrow-alt"></i>Cerrar Sesion</a></li>
+						<li><a href="../../cerrar.php"><img src="../../../assetsNuevo/iconos/exit2.gif" width="40px" height="">Cerrar Sesion</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -62,7 +62,7 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 					</div>
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->	
+							<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
 							<div class="user-info ps-3">
 								<p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
@@ -81,13 +81,13 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 						<div class="row">
 							<div class="col-lg-8">
 								<div class="card">
-								<h2> + Nueva cuenta</h2>
+								<h2><img src="../../../assetsNuevo/iconos/mas2.gif" width="40px" height=""> Nueva cuenta</h2>
 									<div class="card-body">
 										<form action="acciones/crud.php" method="POST" enctype="multipart/form-data">
 								
 										<div class="row mb-3">  
 											<div class="col-sm-3">
-												<h6 class="mb-0">Nombre</h6>
+												<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/editar2.gif" width="40px" height=""> Nombre</h6>
 											</div>
 											<div class="col-sm-9">
 												<input type="text" name="nombrePersona" class="form-control" placeholder="Ingrese un nombre" />
@@ -95,7 +95,7 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 										</div>
                                         <div class="row mb-3">  
 											<div class="col-sm-3">
-												<h6 class="mb-0">Apellido</h6>
+												<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/editar2.gif" width="40px" height=""> Apellido</h6>
 											</div>
 											<div class="col-sm-9">
 												<input type="text" name="apellidoPersona" class="form-control" placeholder="Ingrese un apellido" />
@@ -103,7 +103,7 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 										</div>
                                         <div class="row mb-3">  
 											<div class="col-sm-3">
-												<h6 class="mb-0">Telefono</h6>
+												<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/editar2.gif" width="40px" height=""> Telefono</h6>
 											</div>
 											<div class="col-sm-9">
 												<input type="text" name="telefonoPersona" class="form-control" placeholder="xxx xxx xxxx" />
@@ -111,7 +111,7 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 										</div>
                                         <div class="row mb-3">  
 											<div class="col-sm-3">
-												<h6 class="mb-0">Usuario</h6>
+												<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/cuentas2.gif" width="40px" height=""> Usuario</h6>
 											</div>
 											<div class="col-sm-9">
 												<input type="text" name="usuarioPersona" class="form-control" placeholder="Ingrese el usuario" />
@@ -119,14 +119,14 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 										</div>
                                         <div class="row mb-3">  
 											<div class="col-sm-3">
-												<h6 class="mb-0">Contraseña</h6>
+												<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/pass2.gif" width="40px" height=""> Contraseña</h6>
 											</div>
 											<div class="col-sm-9">
 												<input type="text" name="passPersona" class="form-control" placeholder="***" />
 											</div>
 										</div>
                                         <div class="input-group mb-3">
-											<label class="input-group-text" for="tipoPersona"><h6>Tipo</h6></label>
+											<label class="input-group-text" for="tipoPersona"><h6><img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height=""> Tipo</h6></label>
 											<select name="tipoPersona" class="form-select" id="tipoPersona" style="background-color:rgb(0 0 0 / 15%); !important" onchange="habilitarPersona();">							
 												<option  value="PROFESOR" selected>Profesor</option>
 												<option value="USUARIO">Usuario</option>	
@@ -135,16 +135,15 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 										</div>
 
 										<div class="input-group mb-3">
-											<label class="input-group-text" for="tipoCurso" id="labelCurso"><h6>Curso</h6></label>
+											<label class="input-group-text" for="tipoCurso" id="labelCurso"><h6><img src="../../../assetsNuevo/iconos/cursos2.gif" width="40px" height=""> Curso</h6></label>
 											<select name="tipoCurso" class="form-select" id="tipoCurso" style="background-color:rgb(0 0 0 / 15%); !important">							
 												<option  value="sinCurso" selected>Seleccione un curso</option>
 												<?php foreach($cursos as $curso): ?>)
 													<option value="<?php echo $curso['id']; ?>"><?php echo $curso['titulo_curso']; ?></option>
 												<?php endforeach; ?>
 											</select>
-										</div>
-											
-											<button type="submit" name="agregarCuentas-btn" class="btn btn-success"><i class=""></i>+Agregar</button>
+										</div>										
+										<button type="submit" name="agregarCuentas-btn" class="btn btn-success"><img src="../../../assetsNuevo/iconos/ok2.gif" width="40px" height=""> Agregar</button>
 										</form>
 									</div>
 								</div>

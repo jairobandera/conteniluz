@@ -3,21 +3,19 @@ session_start();
 include '../config.php';
 $conectado = conectar();
 
-//Obtengo la localizacion y guardo en cookies
-if(!isset($_COOKIE["pais"])){
-    $geo = geoLocalizacion();
-    setcookie("pais", $geo, time() + ( 365 * 24 * 60 * 60)); //1 año
-}else if(isset($_COOKIE["pais"])){
-    $pais = $_COOKIE["pais"];
-}else{
-    $pais = "Argentina";
-}
+//Compraboar si existe pais en localstorage
+$pais =  "<script>
+    if(localStorage.getItem('pais')){
+      console.log(localStorage.getItem('pais'));
+    }
+</script>";
 
 unset($_SESSION['id_curso']);
 
 $i = 0;	
 if(isset($_GET['id_empresa']) OR isset($_SESSION['id_empresa'])){
-	$_SESSION['id_empresa'] = $id_empresa = $_GET['id_empresa'];
+	$id_empresa = $_GET['id_empresa'];
+    $_SESSION['id_empresa'] = $id_empresa;
 	$resultado = $conectado->query("SELECT * FROM cursos WHERE id_empresa = $id_empresa");
 	$cursos = $resultado->fetch_all(MYSQLI_ASSOC);
 }
@@ -46,6 +44,11 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
         //var_dump($array);
 }
 
+//Compraboar si existe cookie pais
+if(!isset($_COOKIE["pais"])){
+  //llamo a la funcion setCookiePais de js
+  echo "<script>setCookiePais();</script>";
+}
 
 //$resultado = $conectado->query("SELECT * FROM cursos WHERE id_curso = 1");
 //$empresas = $resultado->fetch_all(MYSQLI_ASSOC);
@@ -54,198 +57,300 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 ?>
 
 <!DOCTYPE html>
+<!--
+
+	Theme Name: HASWELL
+	Description: HTML/CSS 
+	Author: ABCgomel 
+	Designed & Coded by ABCgomel
+	
+-->
+
 <html lang="en">
+ 	<head>
+		<title>Haswell - Responsive HTML5 Template</title>
+		<meta charset="utf-8">
+		<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+		<meta name="robots" content="index, follow" > 
+		<meta name="keywords" content="HTML5 Template" > 
+		<meta name="description" content="Haswell - Responsive HTML5 Template" > 
+		<meta name="author" content="ABCgomel">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Vinero - Very Clean and Minimal Portfolio Website Template</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-    <!-- FONTS -->
-    <link rel="stylesheet" href="../assets/fonts/fontawesome/font-awesome.min.css">
-    <link rel="stylesheet" href="../assets/fonts/iconsmind/iconsmind.css">
-    <!-- STYLESHEETS -->
-    <link rel="stylesheet" href="../assets/css/plugins.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<!-- FAVICONS -->
+    <link rel="shortcut icon" href="../assetsNuevo/images/favicon/favicon.png">
+    <link rel="apple-touch-icon" href="../assetsNuevo/images/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../assetsNuevo/images/favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../assetsNuevo/images/favicon/apple-touch-icon-114x114.png">
+		
+<!-- CSS -->
+    <!-- REVOSLIDER CSS SETTINGS -->
+    <link rel="stylesheet" type="text/css" href="../assetsNuevo/rs-plugin/css/settings.min.css" media="screen">
 
-<body>
-    <div class="vlt-site-holder animsition vlt-footer-fixed">
-        <div class="vlt-content-holder">
-            <header class="vlt-header-holder vlt-header-fixed" data-header-fixed="1">
-                <div class="container">
-                    <div class="vlt-header-inner">
-                        <div class="vlt-header-left">
-                            <a href="index.html" class="vlt-site-logo">
-                                <img src="../assets/img/logo.png" alt="Vinero" style="max-height: 13px">
-                            </a>
-                        </div>
-                        <div class="vlt-header-right">
-                            <div class="vlt-menu-toggle vlt-fullscreen-menu-toggle" data-before-text="Menu">
-                                <span class="line line-one"><span class="inner"></span></span>
-                                <span class="line line-two"><span class="inner"></span></span>
-                                <span class="line line-three"><span class="inner"></span></span>
-                            </div>
-                        </div>
-                    </div>
+    <!--  BOOTSTRAP -->
+		<!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+    <!--  GOOGLE FONT -->		
+		<link href='https://fonts.googleapis.com/css?family=Lato:300,400,700%7COpen+Sans:400,300,700' rel='stylesheet' type='text/css'>
+  
+    <!-- ICONS ELEGANT FONT & FONT AWESOME & LINEA ICONS  -->		
+		<link rel="stylesheet" href="../assetsNuevo/css/icons-fonts.css" >	
+	
+    <!--  CSS THEME -->		
+		<link rel="stylesheet" href="../assetsNuevo/css/style.css" >
+	
+    <!-- ANIMATE -->	
+		<link rel='stylesheet' href="../assetsNuevo/css/animate.min.css">
+		<script src="../assetsNuevo/js/modernizr.js"></script> <!-- Modernizr -->
+		
+	</head>
+	<body>
+	
+		<!-- LOADER -->	
+		<div id="loader-overflow">
+      <div id="loader3">Please enable JS</div>
+    </div>	
+
+		<div id="wrap" class="boxed ">
+			<div class="grey-bg"> <!-- Grey BG  -->	        
+				<!-- HEADER side menu -->
+				<header id="nav-stick2" class="header header-1 header-side-menu fixed white transparent"  >
+				  <div class="header-wrapper">
+            <div class="container-m-30 clearfix">
+              <div class="logo-row">
+              
+              <!-- LOGO --> 
+              <div class="logo-container-2">
+                <div class="logo-2">
+                  <a href="#" class="clearfix">
+                    <img src="https://2.bp.blogspot.com/-YiWi32Pbamo/W1djBdPn0uI/AAAAAAAATrM/BKuX5dAzIOQWpbL65ahXyC6YOfumUX7ZwCK4BGAYYCw/s1600/tulogoaquifooter.png" class="logo-img" alt="Logo">
+                  </a>
                 </div>
-            </header>
-            <!-- /.vlt-header-holder vlt-header-fixed -->
-            <div class="vlt-navigation-fullscreen-holder">
-                <div class="vlt-navigation-fullscreen">
-                    <ul>
-                        <li><a href="index.html">Inicio</a></li>
-                        <li><a href="login.php">Campus</a></li>
-                        <li><a href="contact.html">Sobre Nosotros</a></li>
-                        <li><a href="contact.html">Contacto</a></li>
-                    </ul>
-                    <div class="vlt-navigation-socials">
-                        <ul>
-                            <li><a href="#" class="tooltip" title="Dribbble"><i class="fa fa-dribbble"></i></a></li>
-                            <li><a href="#" class="tooltip" title="Pinterest"><i class="fa fa-pinterest"></i></a></li>
-                            <li><a href="#" class="tooltip" title="Facebook"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#" class="tooltip" title="YouTube"><i class="fa fa-youtube"></i></a></li>
-                        </ul>
-                    </div>
-                    <!-- /.vlt-navigation-socials -->
-                </div>
+              </div>
+             </div>
             </div>
-            <!-- /.vlt-navigation-fullscreen-holder -->
-            <div class="vlt-hero-title-holder jarallax" style="background-image: url('assets/img/index.png');">
-                <div class="vlt-hero-title-inner">
-                    <h1 class="vlt-hero-title">Conteniluz</h1>
-                    <p class="vlt-hero-subtitle">Work hard. Dream big.</p>
-                </div>
+            
+            <!-- BUTTON --> 
+            <div class="menu-btn-respons-container2">
+              <a id="cd-menu-trigger" href="#"><span class="cd-menu-icon"></span></a>
             </div>
-            <!-- /.vlt-hero-title-holder -->
-            <main class="vlt-main-holder vlt-main-padding">
-                <div class="container">
-                    <div class="vlt-portfolio-grid cubeportfolio" id="cubeportfolio">
-                        <?php
-      						foreach ($cursos as $curso) { ?>
-                        <article
-                            class="cbp-item vlt-portfolio-grid-item vlt-portfolio-style2">
-                            <div class="vlt-portfolio-grid-image">
-                                <a class="vlt-portfolio-grid-link"
-                                    href="videos.php?id_curso=<?php echo $curso["id"] ?>">
-                                    <img src="../uploads/cursos/<?php echo $curso["miniatura"] ?>" alt="">
-                                </a>
-                            </div>
-                            <div class="vlt-portfolio-grid-content">
-                                <h5 class="vlt-portfolio-grid-title"><?php echo $curso["titulo_curso"] ?></h5>
-                            </div>
-                            <div class="" data-max-pages="1"
-                                style="display:flex; justify-content: center; margin-top:5px;">
-                                <?php
-										if(isset($array[$i]) AND $array[$i] == $curso["id"] AND isset($arrayPagos) AND $arrayPagos[$i] == 'Y'){
-											echo '<a href="alumno/index.php" class="vlt-btn vlt-btn-primary">Ver</a>';
+				  </div> <!-- END header-wrapper -->
+				  
+				</header>
+
+			<div class="sliding-content">	
+      
+        <!-- STATIC MEDIA IMAGE -->
+        <div id="index-link" class="sm-video-bg" style="background-image: url(https://www.rdstation.com/blog/wp-content/uploads/sites/2/2017/09/thestocks.jpg); margin-bottom:10px; height:500px;" >
+          <div class="container sm-content-cont js-height-fullscr">
+            
+            <!-- VIDEO BG -->
+            <!-- If you want to change video - replace video files in folder "video" -->
+            <div class="sm-video-wrapper">
+              <div class="sm-video bg-img-alfa"></div>
+            </div> 
+            
+          </div>
+        </div>  
+				<!-- DIVIDER -->
+				<hr class="mt-0 mb-0">			
+
+				<!-- FEATURES -->
+        <?php
+        if($cursos){
+      	foreach ($cursos as $curso) { ?>
+				<div class="page-section">
+					<div class="container-fluid">
+						<div class="row">
+            
+							<div class="col-md-6 wow fadeInLeft equal-height ">
+								<div class="fes2-main-text-cont">
+									<div class="title-fs-45"><br>
+										<span class="bold"><?php echo $curso["titulo_curso"] ?></span>
+									</div>
+									<div class="line-3-70"></div>
+									<div class="fes2-text-cont">
+                  <?php
+										if(isset($array[$i]) AND $array[$i] == $curso["id"] AND isset($arrayPagos) AND $arrayPagos[$i] == 'Y' AND $arrayPagos[$i] != 'N'){
+											echo '<a href="alumno/index.php" class="btn btn-primary">Ver</a>';
 											$i= $i + 1;
 										}else if(!isset($_SESSION['id_usuario'])){
 											if($pais == PAIS){
-											$concatenar = '<a href="register.php?id_empresa='.$id_empresa.'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
-											echo $concatenar;
+                        echo '<form action="register.php" method="post" target="">
+                                <input type="hidden" name="id_empresa" value='.$id_empresa.'>
+                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                <input type="hidden" name="precio" value='.$curso['pesos'].'>
+                                <button type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
+                            </form>';
+											    /*$concatenar = '<a href="register.php?id_empresa='.$id_empresa.'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
+											    echo $concatenar;*/
 											}else{
+                        echo '<form action="register.php" method="post" target="">
+                                <input type="hidden" name="id_empresa" value='.$id_empresa.'>
+                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                <button type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
+                            </form>';
+                                                /*
 												$concatenar = '<a href="register.php?id_empresa='.$id_empresa.'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["dolares"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["dolares"].'- Comprar</a>';
-												echo $concatenar;	
+												echo $concatenar;	*/
 											}
+                      $i = $i + 1;
 										}elseif(isset($_SESSION['id_usuario'])){
 											if($pais == PAIS){
+                        $moneda = 'pesos';
+                        echo '<form action="../MercadoPago/index.php" method="post" target="">
+                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                <input type="hidden" name="precio" value='.$curso['pesos'].'>
+                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                <button type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
+                            </form>';
 												//$concatenar = '<a href="../../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&pecio='.$curso["pesos"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
 												//echo $concatenar;
-												$moneda = 'pesos';
+												/*$moneda = 'pesos';
 												$concatenar = '<a href="../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
-												echo $concatenar;
+												echo $concatenar;*/
 											}else{
-												$moneda = 'dolares';
+                        $moneda = 'dolares';
+                        echo '<form action="../MercadoPago/index.php" method="post" target="">
+                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                <button type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
+                            </form>';
+												/*$moneda = 'dolares';
 												$concatenar = '<a href="../MercadoPago/index.php?id_empresa='.$curso["id_empresa"].'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["dolares"].'&moneda='.$moneda.'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["dolares"].'- Comprar</a>';
-												echo $concatenar;
+												echo $concatenar;*/
 											}
+                      $i = $i + 1;
 										}
 									?>
-                            </div>
-                        </article>
-                        <?php } ?>
-                    </div>
-                </div>
-            </main>
-            <!-- /.vlt-main-holder vlt-main-padding -->
-        </div>
-        <!-- /.vlt-content-holder -->
-        <footer class="vlt-footer-holder vlt-footer-minimal" data-footer-fixed="1">
-            <div class="vlt-footer-inner">
-                <div class="container">
-                    <div class="text-center">
-                        <a href="index.html" class="vlt-site-logo">
-                            <img src="../assets/img/logo.png" alt="Vinero" style="max-height: 13px">
-                        </a>
-                        <div class="vlt-footer-menu">
-                            <div>
-                                <ul>
-                                    <li>
-                                        <a href="#">Works</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">About</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Contact</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Purchase</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="vlt-footer-copyright">
-                            <p>Copyright © 2017 Vinero. Powered by <a href="#" class="vlt-link reverse">VLThemes</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- /.vlt-footer-holder -->
-    </div>
-    <!-- /.vlt-site-holder -->
-    <a href="#" class="vlt-back-to-top hidden"><i class="fa fa-angle-up"></i></a>
-    <!-- /.vlt-back-to-top -->
-</body>
-<!-- SCRIPTS -->
-<script src="../assets/vendors/jquery.min.js"></script>
-<script src="../assets/scripts/plugins.min.js"></script>
-<script type="text/javascript">
-jQuery.noConflict()(function($) {
-    var gridContainer = $('#cubeportfolio');
-    gridContainer.imagesLoaded(function() {
-        gridContainer.cubeportfolio({
-            defaultFilter: '*',
-            filters: '.vlt-portfolio-grid-filters',
-            animationType: 'fadeOut',
-            layoutMode: 'grid', //mosaic
-            sortToPreventGaps: true,
-            gapHorizontal: 30,
-            gapVertical: 30,
-            gridAdjustment: 'responsive',
-            mediaQueries: [{
-                width: 1170,
-                cols: 3,
-            }, {
-                width: 991,
-                cols: 3,
-            }, {
-                width: 767,
-                cols: 2,
-            }, {
-                width: 575,
-                cols: 1,
-            }],
-            displayType: 'default',
-            displayTypeSpeed: 150,
-        });
-    });
-});
-</script>
-<script src="../assets/scripts/script.js"></script>
+                  </div>
+								</div>
+							</div>
+              
+							<div class="col-md-6">
+								<div class="row">
+									<div class="fes2-img equal-height"><img class="port-main-img" src="../uploads/cursos/<?php echo $curso["miniatura"] ?>" alt="img" ></div>
+								</div>
+							</div>
+              
+						</div>
+					</div>
+				</div>
+        <?php }} ?>
+        <!-- FIN FEATURES -->
 
-</html>
+				<!-- DIVIDER -->
+				<hr class="mt-0 mb-0">	
+        <!-- FOOTER 5 -->
+        <footer id="footer5" class="page-section pt-80 pb-50">
+          <div class="container">            
+            <div class="footer-2-copy-cont clearfix">
+              <!-- Social Links -->
+              <div class="footer-2-soc-a right">
+                <a href="https://1.envato.market/a1gQR" title="Facebook" target="_blank"><i class="fa fa-facebook"></i></a>
+                <a href="https://1.envato.market/a1gQR" title="Twitter" target="_blank"><i class="fa fa-twitter"></i></a>
+                <a href="https://1.envato.market/a1gQR" title="Behance" target="_blank"><i class="fa fa-behance"></i></a>
+                <a href="https://1.envato.market/a1gQR" title="LinkedIn+" target="_blank"><i class="fa fa-linkedin"></i></a>
+                <a href="https://dribbble.com/abcgomel" title="Dribbble" target="_blank"><i class="fa fa-dribbble"></i></a>
+              </div>
+              
+              <!-- Copyright -->
+              <div class="left">
+                <a class="footer-2-copy" href="https://1.envato.market/a1gQR" target="_blank">&copy; HASWELL 2020</a>
+              </div>
+              
+
+            </div>
+                    
+          </div>
+        </footer>
+        
+      </div> <!-- sliding-content -->
+      
+      <!-- SIDE MENU -->      
+      <nav id="cd-lateral-nav">
+        <ul class="cd-navigation cd-single-item-wrapper">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="login.php">Campus</a></li>
+          <li><a href="contact.html">Sobre Nosotros</a></li>
+          <li><a href="contact.html">Contacto</a></li>
+        </ul> <!-- cd-single-item-wrapper -->
+      </nav><!-- END side menu -->
+      
+      <!-- BACK TO TOP -->
+			<p id="back-top">
+        <a href="#top" title="Back to Top"><span class="icon icon-arrows-up"></span></a>
+      </p>
+        
+			</div><!-- End BG -->	
+		</div><!-- End wrap -->	
+			
+<!-- JS begin -->
+
+		<!-- jQuery  -->
+		<script src="../assetsNuevo/js/jquery-1.11.2.min.js"></script>
+
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../assetsNuevo/js/bootstrap.min.js"></script>		
+
+		<!-- MAGNIFIC POPUP -->
+		<script src='../assetsNuevo/js/jquery.magnific-popup.min.js'></script>
+    
+    <!-- PORTFOLIO SCRIPTS -->
+    <script src="../assetsNuevo/js/isotope.pkgd.min.js"></script>
+    <script src="../assetsNuevo/js/imagesloaded.pkgd.min.js"></script>
+    <script src="../assetsNuevo/js/masonry.pkgd.min.js"></script>
+    
+    <!-- COUNTER -->
+    <script src="../assetsNuevo/js/jquery.countTo.js"></script>
+    
+    <!-- APPEAR -->    
+    <script src="../assetsNuevo/js/jquery.appear.js"></script>
+    
+    <!-- OWL CAROUSEL -->    
+    <script src="../assetsNuevo/js/owl.carousel.min.js"></script>
+    
+    <!-- FLICKR WIDGET -->
+		<script src="../assetsNuevo/js/jflickrfeed.min.js"></script>
+    
+    <!-- JQUERY TWEETS -->
+		<script src="../assetsNuevo/js/twitter/jquery.tweet.js"></script> 
+    
+    <!-- MAIN SCRIPT -->
+		<script src="../assetsNuevo/js/main.js"></script>
+
+    <!-- SIDE MENU -->
+		<script src="../assetsNuevo/js/side-menu.js"></script>
+
+    <!-- BACKGROUND VIDEO -->    
+    <script src="../assetsNuevo/js/jquery.backgroundvideo.min.js"></script> 
+    <script>
+    $(document).ready(function(){
+      if (!($("html").hasClass("mobile"))){
+        var videobackground = new $.backgroundVideo($('.sm-video'), {
+          "align": "centerXY",
+          "width": 1920,
+          "height": 1080,
+          "path": "video/",
+          "filename": "The-Crosswalk",
+          "types": ["mp4", "webm"],
+          "autoplay": true,
+          "loop": true
+        });
+      }
+    });
+    </script>
+<!-- JS end -->	
+	
+	</body>
+</html>		

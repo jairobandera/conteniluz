@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 include 'config.php';
 
@@ -83,7 +84,14 @@ function tipo(){
             $_SESSION['nombre_alumno'] = $fila['nombre'];
             $_SESSION['apellido_alumno'] = $fila['apellido'];
             $_SESSION['telefono'] = $fila['telefono'];
-            header('Location: Template/alumno/index.php');
+            if(isset($_SESSION['id_empresa'])){
+                $id_empresa = $_SESSION['id_empresa'];
+                //header('Location: Template/alumno/index.php?id_empresa='.$id_empresa);
+                echo '<script>window.location.href = "Template/alumno/index.php?id_empresa='.$id_empresa.'";</script>';
+            }else{
+                //header('Location: Template/alumno/index.php');
+                echo '<script>window.location.href = "Template/alumno/index.php?";</script>';
+            }            
         }else if($_SESSION['tipo'] == 'PROFESOR'){
             $usuario = $_POST['usuario'];
             $password = md5($_POST['password']);
@@ -158,9 +166,14 @@ function validarAlumnoCurso($usuario, $password,$id_curso){
                         $_SESSION['id_usuario'] = $fila['idUsu'];
                         $_SESSION['tipo'] = $fila['tipo'];
                         desconectar($conectado);
-                        $id_empresa = $_SESSION['id_empresa'];
-                        $concatenar = 'Location: Template/cursos.php?id_empresa='.$id_empresa;
-                        header($concatenar);
+                        if(isset($_SESSION['id_empresa'])){
+                            $id_empresa = $_SESSION['id_empresa'];
+                            header('Location: Template/cursos.php?id_empresa='.$id_empresa);
+                            //header($concatenar);
+                        }else{
+                            header('Location: Template/alumno/index.php');
+                        }
+                        
                     }else{
                         //echo $id_usuario;
                     }            
@@ -183,6 +196,13 @@ function comprobarUsuario($usuario, $password){
                     desconectar($conectado);
                 }else{
                     //falta hacer si no existe el usuario;
+                    if(!isset($_SESSION['error'])){
+                        $_SESSION['error'] = 'Usuario y/o contraseña incorrectos';
+                        header('Location: Template/login.php');
+                    }else{
+                        $_SESSION['error'] = 'Usuario y/o contraseña incorrectos';
+                        header('Location: Template/login.php');
+                    }
                 }
     }
 }

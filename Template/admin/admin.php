@@ -30,20 +30,20 @@ include 'Template/head.php';
 			<ul class="metismenu" id="menu">
 				<li>
 					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+						<div class="parent-icon"><img src="../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
 						<div class="menu-title">Panel administrador</div>
 					</a>
 					<ul>
-						<li> <a href="acciones/agregarEmpresas.php"><i class="bx bx-right-arrow-alt"></i>Agregar Empresas</a>
+						<li> <a href="acciones/agregarEmpresas.php"><img src="../../assetsNuevo/iconos/mas2.gif" width="40px" height="">Agregar Empresas</a>
 						</li>
-						<li> <a href="pagos.php"><i class="bx bx-right-arrow-alt"></i>Pagos</a>
+						<li> <a href="pagos.php"><img src="../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
 						</li>
-                        <li> <a href="acciones/cuentas.php"><i class="bx bx-right-arrow-alt"></i>Crear Cuentas</a>
+                        <li> <a href="acciones/cuentas.php"><img src="../../assetsNuevo/iconos/cuentas2.gif" width="40px" height="">Crear Cuentas</a>
 						</li>
-						<li> <a href="usuarios.php"><i class="bx bx-right-arrow-alt"></i>Ver Cuentas</a>
+						<li> <a href="usuarios.php"><img src="../../assetsNuevo/iconos/pass2.gif" width="40px" height="">Ver Cuentas</a>
 						</li>
-						<li><a href="../cerrar.php"><i class="bx bx-right-arrow-alt"></i>Cerrar Sesion</a></li>
+						<li><a href="../cerrar.php"><img src="../../assetsNuevo/iconos/exit2.gif" width="40px" height="">Cerrar Sesion</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -59,6 +59,7 @@ include 'Template/head.php';
 					<div class="user-box dropdown">
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->	
+							<img src="../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
 							<div class="user-info ps-3">
 								<p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
@@ -71,7 +72,7 @@ include 'Template/head.php';
 		<!--end header -->
         <div class="page-wrapper">
             <div class="page-content">
-                <h6 class="mb-0 text-uppercase">Empresas</h6>
+                <h6 class="mb-0 text-uppercase"><img src="../../assetsNuevo/iconos/empresas2.gif" width="40px" height=""> Empresas</h6>
                     <hr/>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">
                     <?php
@@ -82,15 +83,32 @@ include 'Template/head.php';
                                 <img src="../../uploads/empresas/<?php echo $empresa["miniatura"] ?>" class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <h5 class="card-title"><?php echo $empresa["nombre_empresa"] ?></h5>   
-                                    <a href="acciones/editarEmpresas.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-info">Editar</a>
-									<a href="acciones/eliminarEmpresas.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-danger">Eliminar</a>
-									<a href="acciones/agregarCursos.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-success">Agregar Cursos</a> 
-									<a href="acciones/verCursos.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-warning">Ver Cursos</a>                            
+                                    <a href="acciones/editarEmpresas.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-info"><img src="../../assetsNuevo/iconos/editar.gif" width="30px" height="">Editar</a>
+									<a onclick="" id="eliminarEmpresas" href="acciones/eliminarEmpresas.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-danger"><img src="../../assetsNuevo/iconos/borrar.gif" width="30px" height="">Eliminar</a>
+									<a href="acciones/agregarCursos.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-success"><img src="../../assetsNuevo/iconos/mas.gif" width="30px" height="">Agregar Cursos</a> 
+									<a href="acciones/verCursos.php?id_empresa=<?php echo $empresa["id"] ?>" style="margin-top:5px;" class="btn btn-warning"><img src="../../assetsNuevo/iconos/pass.gif" width="30px" height="">Ver Cursos</a>                            
                                 </div>
                             </div>
                         </div><!-- fin card -->
                     <?php } ?>
                     </div>
+					<?php
+						if(isset($_SESSION['success'])){
+							echo '<script>alertaCrearCursos(1);</script>'; 
+							//echo '<script>alertaCrearEmpresas(1);</script>';  
+							//echo '<script>alertaEliminarEmpresas(1);</script>';                                                          
+							//echo '<div class="alert alert-success" style="color:green;" role="alert">'.$_SESSION['success'].'</div>';
+							unset($_SESSION['success']);
+						}else{
+							if(isset($_SESSION['error'])){
+								echo '<script>alertaCrearCursos(2);</script>'; 
+								//echo '<script>alertaCrearEmpresas(2);</script>';  
+								//echo '<script>alertaEliminarEmpresas(2);</script>';                                                          
+								echo '<div class="alert alert-danger" style="color:red;" role="alert">'.$_SESSION['error'].'</div>';
+								unset($_SESSION['error']);
+							}
+						}
+					?>
             </div><!-- fin page-content -->
         </div><!-- fin page-wrapper -->
 <?php
