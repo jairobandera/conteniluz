@@ -3,6 +3,11 @@ session_start();
 include '../../config.php';
 $conectado = conectar();
 
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../login.php";</script>';
+	//header("location: ../login.php");
+}
+
 $id_usuario = $_SESSION['id_usuario'];
 $id_profesor = $_SESSION['id_profesor'];
 
@@ -42,19 +47,19 @@ include 'Template/head.php';
 				</div>
 			</div>
 			<!--navigation-->
-			<ul class="metismenu" id="menu">
+			<ul class="metismenu" id="menu" aria-expanded="true">
 				<li>
 					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+						<div class="parent-icon"><img src="../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
-						<div class="menu-title">Dashboard</div>
+						<div class="menu-title">Panel administrador</div>
 					</a>
-					<ul>
-						<li> <a href="index.php"><i class="bx bx-right-arrow-alt"></i>Agregar Curso</a>
+					<ul class="mm-collapse mm-show">
+						<li> <a href="index.php"><img src="../../assetsNuevo/iconos/mas2.gif" width="40px" height=""> Agregar Curso</a>
 						</li>
-                        <li> <a href="cursos.php"><i class="bx bx-right-arrow-alt"></i>Ver Cursos</a>
+                        <li> <a href="cursos.php"><img src="../../assetsNuevo/iconos/pass2.gif" width="40px" height=""> Ver Cursos</a>
 						</li>
-						<li> <a href="pagos.php"><i class="bx bx-right-arrow-alt"></i>Pagos</a>
+						<li> <a href="pagos.php"><img src="../../assetsNuevo/iconos/pagos2.gif" width="40px" height=""> Pagos</a>
 						</li>
 					</ul>
 				</li>
@@ -68,14 +73,26 @@ include 'Template/head.php';
 				<nav class="navbar navbar-expand">
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
-					<div class="user-box dropdown">
-						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
-							<div class="user-info ps-3">
-								<p class="user-name mb-0">Pauline Seitz</p>
-								<p class="designattion mb-0">Web Designer</p>
-							</div>
-						</a>
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</nav>
 			</div>
@@ -83,7 +100,7 @@ include 'Template/head.php';
 		<!--end header -->
         <div class="page-wrapper">
 			<div class="page-content">
-                <h6 class="mb-0 text-uppercase">Listado de cursos</h6>
+                <h6 class="mb-0 text-uppercase"><img src="../../assetsNuevo/iconos/youtube2.gif" width="40px" height=""> Listado de videos</h6>
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-4">						
 						<?php
 							foreach ($videos as $video) { ?>
@@ -95,8 +112,8 @@ include 'Template/head.php';
 											<h5 class="card-title"><?php echo $video["titulo_video"] ?></h5>
 											<p class="card-title"><?php echo $video["descripcion"] ?></p>
 											<input type="hidden" name="id" id="id" value="<?php echo $video["id"] ?>">
-											<button type="submit" name="edit-btn" class="btn btn-info"><i class=""></i>Editar</button>
-											<button type="submit" name="delete-btn" class="btn btn-danger"><i class=""></i>Eliminar</button>
+											<button type="submit" name="edit-btn" class="btn btn-info"><img src="../../assetsNuevo/iconos/editar2.gif" width="40px" height="">Editar</button>
+											<button type="submit" name="delete-btn" class="btn btn-danger"><img src="../../assetsNuevo/iconos/borrar2.gif" width="40px" height="">Eliminar</button>
 										</div>
 									</div>
 								</div>

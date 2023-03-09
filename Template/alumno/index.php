@@ -1,16 +1,44 @@
 <?php
 session_start();
+
 include '../../config.php';
 $conectado = conectar();
 
-if(isset($_SESSION['id_usuario'])){
-	//$id_curso = $_GET['id_curso'];
-	$resultado = $conectado->query("SELECT * FROM cursos AS c WHERE EXISTS(
-	SELECT * FROM alumno AS a, usuario AS u WHERE a.id_usuario = u.id 
-	AND a.id_curso = c.id AND u.id = ".$_SESSION['id_usuario']." AND u.tipo = 'USUARIO')");
-	$cursos = $resultado->fetch_all(MYSQLI_ASSOC);
-}
+$_SESSION['alumnoLogeado'] = true;
 $i = 0;	
+$indexVideos = 0;
+
+if(isset($_SESSION['id_usuario'])){
+    $idUsuario = $_SESSION['id_usuario'];
+	//$id_curso = $_GET['id_curso'];
+	$resultado = $conectado->query("SELECT c.*, p.fecha_pago, p.id AS IdPago, p.id_alumno FROM cursos AS c, pagos AS p WHERE EXISTS(
+        SELECT * FROM alumno AS a, usuario AS u WHERE a.id_usuario = u.id 
+        AND a.id_curso = c.id AND u.id = ".$_SESSION['id_usuario']." AND u.tipo = 'USUARIO' AND p.id_curso = a.id_curso)");
+	$cursos = $resultado->fetch_all(MYSQLI_ASSOC);
+
+    //SI no hay cursos
+    if(!$cursos){
+        $idUsuario = $_SESSION['id_usuario'];
+        //$id_curso = $_GET['id_curso'];
+        $resultado = $conectado->query("SELECT c.* FROM cursos AS c WHERE EXISTS(
+            SELECT * FROM alumno AS a, usuario AS u WHERE a.id_usuario = u.id 
+            AND a.id_curso = c.id AND u.id = ".$_SESSION['id_usuario']." AND u.tipo = 'USUARIO')");
+        $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+
+    //Titulos para los tabs
+    $titulos = array();
+    foreach($cursos as $curso){
+        $titulos[] = $curso['titulo_curso'];
+    }
+
+    //obtengo todos los titulos menos el primero
+    $titulosMenosElPrimero = array_slice($titulos, 1);
+}else{
+    //Si no existe la variable de sesion id_usuario, redirecciono a la pagina de login
+    echo '<script>window.location.href = "../login.php";</script>';
+    //header('Location: ../login.php');
+}
 
 if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 	$id_usuario = $_SESSION['id_usuario'];
@@ -22,318 +50,382 @@ if(isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
 	//$resultado= $resultado->fetch_assoc();
 	$array = array();
 	$arrayPagos = array();
+    $arrayVideos = array();
+
 	if($cursos2){
-			foreach($cursos2 as $curso2){
-				$id_curso = $curso2['id'];
-				$pago = $curso2['pago'];
-				array_push($array, $id_curso);
-				array_push($arrayPagos, $pago);
-			}
+		foreach($cursos2 as $curso2){
+			$id_curso = $curso2['id'];
+			$pago = $curso2['pago'];
+			array_push($array, $id_curso);
+			array_push($arrayPagos, $pago);
 		}
-        //var_dump($array);
-        //var_dump($arrayPagos);	
+        //sort($array);
+        //$arrayPagos = array_reverse($arrayPagos);
+	}
+        //print_r($array);
+        //print_r($arrayPagos);	
         //compruebo si existe la cookie pais
 }
-$pais =  "<script>
-    if(localStorage.getItem('pais')){
-      console.log(localStorage.getItem('pais'));
-    }
-</script>";
-//$resultado = $conectado->query("SELECT * FROM cursos WHERE id_curso = 1");
-//$empresas = $resultado->fetch_all(MYSQLI_ASSOC);
-//$cantidad = mysqli_num_rows($cursos);
-//echo $cantidad;
+$pais =  $_COOKIE['pais'];
 
+/*echo '<pre>';
+print_r($duracionCursos);*/
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html">
 
 <head>
-    <title>Haswell - Responsive HTML5 Template</title>
     <meta charset="utf-8">
-    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" content="HTML5 Template">
-    <meta name="description" content="Haswell - Responsive HTML5 Template">
-    <meta name="author" content="ABCgomel">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <!-- FAVICONS -->
-    <link rel="shortcut icon" href="../../assetsNuevo/images/favicon/favicon.png">
-    <link rel="apple-touch-icon" href="../../assetsNuevo/images/favicon/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="../../assetsNuevo/images/favicon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="../../assetsNuevo/images/favicon/apple-touch-icon-114x114.png">
-
-    <!-- CSS -->
-    <!-- REVOSLIDER CSS SETTINGS -->
-    <link rel="stylesheet" type="text/css" href="../../assetsNuevo/rs-plugin/css/settings.min.css" media="screen">
-
-    <!--  BOOTSTRAP -->
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-
-    <!--  GOOGLE FONT -->
-    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700%7COpen+Sans:400,300,700' rel='stylesheet'
-        type='text/css'>
-
-    <!-- ICONS ELEGANT FONT & FONT AWESOME & LINEA ICONS  -->
-    <link rel="stylesheet" href="../../assetsNuevo/css/icons-fonts.css">
-
-    <!--  CSS THEME -->
-    <link rel="stylesheet" href="../../assetsNuevo/css/style.css">
-
-    <!-- ANIMATE -->
-    <link rel='stylesheet' href="../../assetsNuevo/css/animate.min.css">
-    <script src="../../assetsNuevo/js/modernizr.js"></script> <!-- Modernizr -->
-
+    <title>
+        InstituZion - Salon de clases
+    </title>
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <meta content="" name="keywords">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link rel="icon" href="../../assets/assets/images/icono.png" type="image/png" />
+    <!-- Ultimex v1.2 || ex nihilo || September - October 2020 -->
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" crossorigin="anonymous">
+    </script>
+    <!-- style start -->
+    <link href="../../assetsFinal/css/plugins.css" media="all" rel="stylesheet" type="text/css">
+    <link href="../../assetsFinal/css/style-dark.css" media="all" rel="stylesheet" type="text/css"><!-- style end -->
+    <!-- google fonts start -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900%7COswald:300,400,700"
+        rel="stylesheet" type="text/css"><!-- google fonts end -->
 </head>
 
 <body>
-
-    <!-- LOADER -->
-    <div id="loader-overflow">
-        <div id="loader3">Please enable JS</div>
-    </div>
-
-    <div id="wrap" class="boxed ">
-        <div class="grey-bg">
-            <!-- HEADER side menu -->
-            <header id="nav-stick2" class="header header-1 header-side-menu fixed white transparent">
-                <div class="header-wrapper">
-                    <div class="container-m-30 clearfix">
-                        <div class="logo-row">
-
-                            <!-- LOGO -->
-                            <div class="logo-container-2">
-                                <div class="logo-2">
-                                    <a href="#" class="clearfix">
-                                        <img src="https://2.bp.blogspot.com/-YiWi32Pbamo/W1djBdPn0uI/AAAAAAAATrM/BKuX5dAzIOQWpbL65ahXyC6YOfumUX7ZwCK4BGAYYCw/s1600/tulogoaquifooter.png" class="logo-img" alt="Logo">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- BUTTON -->
-                    <div class="menu-btn-respons-container2">
-                        <a id="cd-menu-trigger" href="#"><span class="cd-menu-icon"></span></a>
-                    </div>
-                </div> <!-- END header-wrapper -->
-
-            </header>
-
-            <div class="sliding-content">
-
-                <!-- STATIC MEDIA IMAGE -->
-                <div id="index-link" class="sm-video-bg"
-                    style="background-image: url(https://www.rdstation.com/blog/wp-content/uploads/sites/2/2017/09/thestocks.jpg); margin-bottom:10px; height:500px;">
-                    <div class="container sm-content-cont js-height-fullscr">
-
-                        <!-- VIDEO BG -->
-                        <!-- If you want to change video - replace video files in folder "video" -->
-                        <div class="sm-video-wrapper">
-                            <div class="sm-video bg-img-alfa"></div>
-                        </div>
-
-                    </div>
+    <div aria-hidden="true" class="" id="newsModal-1" role="dialog" tabindex="-1">
+        <!-- news modal content 1 start -->
+        <div class="modal-content">
+            <!-- container start -->
+            <div class="container">
+                <!-- dot pattern start -->
+                <div class="dot-pattern-wrapper">
+                    <div class="dot-pattern"></div>
                 </div>
-                <!-- DIVIDER -->
-                <hr class="mt-0 mb-0">
+                <div class="dot-pattern-wrapper-reverse">
+                    <div class="dot-pattern"></div>
+                </div><!-- dot pattern end -->
+                <!-- row start -->
+                <div class="row">
+                    <!-- col start -->
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <!-- news modal body 1 start -->
+                        <div class="modal-body">
+                            <div class="button-the-wrapper button-the-wrapper-modal"
+                                style="display:flex;justify-content: space-around;">
+                                <a class="" data-dismiss="" href="comprarCursos.php">Comprar cursos</a>
+                                <a class="" data-dismiss="" href="../cerrar.php">Cerrar sesion</a>
+                            </div><!-- button end -->
+                            <!-- cargo los titulos de los cursos -->
+                            <!-- divider start -->
+                            <?php if(empty($titulos)){ ?>
+                                <?php echo '<h1 class="text-center" style="color:black;">No hay cursos disponibles</h1>'; ?>
+                            <?php }else{ ?>
+                                <?php 
+                                    $searchString = " ";
+                                    $replaceString = "";
+                                    $titulosS = str_replace($searchString, $replaceString, $titulos[0]);
+                                ?>
+                                <div class="inner-divider-half"></div><!-- divider end -->
+                                <ul class="nav nav-tabs">
+                                    <li id="tabActive" class="active">
+                                        <a data-toggle="tab"
+                                            style="color:#ff264a; font-size:2rem; background-color:#808080; margin-right:5px;"
+                                            class="post-title post-title-news"
+                                            href="#<?php echo $titulosS; ?>"><?php echo $titulos[0]; ?></a>
+                                    </li>
+                                    <?php foreach($titulosMenosElPrimero as $titulosPrimero){ ?>
+                                    <?php 
+                                        $searchString = " ";
+                                        $replaceString = "";
+                                        $titulosPrimeroS = str_replace($searchString, $replaceString, $titulosPrimero);
+                                    ?>
+                                    <li id="tabActive">
+                                        <a data-toggle="tab"
+                                            style="color:#ff264a; font-size:2rem; background-color:#808080; margin-right:5px; margin-bottom:8px;"
+                                            class="post-title post-title-news"
+                                            href="#<?php echo $titulosPrimeroS; ?>"><?php echo $titulosPrimero; ?></a>
+                                    </li>
+                                    <?php } ?>
+                                </ul>
+                            <?php }//Fin if empty cursos ?>
 
-                <!-- FEATURES -->
-                <?php
-        if($cursos){
-      	foreach ($cursos as $curso) { ?>
-                <div class="page-section">
-                    <div class="container-fluid">
-                        <div class="row">
+                            <div class="tab-content">
+                                <!-- inicio tab-content -->
+                                <?php foreach($cursos as $curso){
+                                        $id_curso = $curso['id'];
+                                        $id_empresa = $curso['id_empresa'];
+                                        $titulo_curso = $curso['titulo_curso'];
+                                        $miniatura = $curso['miniatura'];
+                                        $dolares = $curso['dolares'];
+                                        $pesos = $curso['pesos'];
+                                        $duracion = $curso['duracion'];
+                                        if(isset($curso['fecha_pago'])){ $fechaPago = $curso['fecha_pago'];}
+                                        $id_profesor = $curso['id_profesor'];
+                                        if(isset($curso['IdPago'])){ $id_pago = $curso['IdPago'];}
+                                        //$id_pago = $curso['IdPago'];
+                                        if(isset($curso['id_alumno'])){ $id_alumno = $curso['id_alumno'];}
+                                        //$id_alumno = $curso['id_alumno'];
 
-                            <div class="col-md-6 wow fadeInLeft equal-height ">
-                                <div class="fes2-main-text-cont">
-                                    <div class="title-fs-45"><br>
-                                        <span class="bold"><?php echo $curso["titulo_curso"] ?></span>
-                                    </div>
-                                    <div class="line-3-70"></div>
-                                    <div class="fes2-text-cont">
-                                        <?php
-										if(isset($array[$i]) AND $array[$i] == $curso["id"] AND isset($arrayPagos) AND $arrayPagos[$i] == 'Y' AND $arrayPagos[$i] != 'N'){
-											echo '<a href="alumno/index.php" class="btn btn-primary">Ver</a>';
-											$i= $i + 1;
-										}else if(!isset($_SESSION['id_usuario'])){
-											if($pais == PAIS){
-                                        echo '<form action="register.php" method="post" target="">
-                                                <input type="hidden" name="id_empresa" value='.$id_empresa.'>
-                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
-                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
-                                                <input type="hidden" name="precio" value='.$curso['pesos'].'>
-                                                <button type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
-                                            </form>';
-                                                                /*$concatenar = '<a href="register.php?id_empresa='.$id_empresa.'&id_curso='.$curso["id"].'&titulo='.$curso["titulo_curso"].'&precio='.$curso["pesos"].'"'.'class="vlt-btn vlt-btn-primary">$'. $curso["pesos"].'- Comprar</a>';
-                                                                echo $concatenar;*/
-                                        }else{
-                                        echo '<form action="register.php" method="post" target="">
-                                                <input type="hidden" name="id_empresa" value='.$id_empresa.'>
-                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
-                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
-                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
-                                                <button type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
-                                            </form>';
-                                        }
-                                            $i = $i + 1;
-                                        }elseif(isset($_SESSION['id_usuario'])){
-                                            if($pais == PAIS){
-                                        $moneda = 'pesos';
-                                        echo '<form action="../MercadoPago/index.php" method="post" target="">
-                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
-                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
-                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
-                                                <input type="hidden" name="precio" value='.$curso['pesos'].'>
-                                                <input type="hidden" name="moneda" value='.$moneda.'>
-                                                <button type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
-                                            </form>';
-										}else{
-                                        $moneda = 'dolares';
-                                        echo '<form action="../MercadoPago/index.php" method="post" target="">
-                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
-                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
-                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
-                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
-                                                <input type="hidden" name="moneda" value='.$moneda.'>
-                                                <button type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
-                                            </form>';
+                                        $resultado = $conectado->query("SELECT v.*, a.pago FROM videos AS v, alumno AS a WHERE EXISTS(
+                                            SELECT * FROM cursos AS c WHERE a.id_curso = $id_curso
+                                            AND v.id_curso = $id_curso 
+                                            AND v.id_curso = $id_curso
+                                            AND a.id_usuario = ".$_SESSION['id_usuario'].")");
+                                        $videos = $resultado->fetch_all(MYSQLI_ASSOC);
+                                        /*echo '<pre>';
+                                        print_r($videos);*/
+                                ?>
+                                <?php //comprobar si es el primer curso ?>
+                                <?php if($id_curso == $cursos[0]['id']){ ?>
+                                <?php 
+                                        $searchString = " ";
+                                        $replaceString = "";
+                                        $titulo_curso = str_replace($searchString, $replaceString, $titulo_curso);
+                                    ?>
+                                <div style="" id="<?php echo trim($titulo_curso); ?>" class="tab-pane fade in active"
+                                    role="tabpanel" aria-labelledby="<?php echo $titulo_curso; ?>">
+                                    <?php }else{
+                                    $searchString = " ";
+                                    $replaceString = "";
+                                    $titulo_curso = str_replace($searchString, $replaceString, $titulo_curso);
+                                    ?>
+                                    <div style="" id="<?php echo trim($titulo_curso); ?>" class="tab-pane fade"
+                                        role="tabpanel" aria-labelledby="<?php echo $titulo_curso; ?>">
+                                        <?php } ?>
+                                        <!-- divider start -->
+                                        <div class="inner-divider-half"></div><!-- divider end -->
+                                        <!-- primer tabs -->
+                                        <!-- page title start -->
+                                        <div class="post-title post-title-news">
+                                            Titulo: <span
+                                                class="post-title-color"><?php echo $videos[0]["titulo_video"];?></span>
+                                        </div><!-- page title end -->
+                                        <!-- divider start -->
+                                        <div class="inner-divider-half"></div><!-- divider end -->
+                                        <!-- page subtitle start -->
+                                        <h4 class="post-heading post-heading-all post-heading-all-date" style="margin-bottom:10px;">
+                                            Duracion: <span class="button-the-wrapper"><?php echo $duracion; ?></span>
+                                            (Meses)
+                                            <?php 
+                                                if(isset($fechaPago)){
+                                                    $fecha1 = new DateTime($fechaPago);
+                                                    $fecha2 = new DateTime(date("Y-m-d"));
+                                                    $fecha = $fecha1->diff($fecha2);
+                                                    $meses = $fecha->m;
+                                                    $dias = $fecha->d;
+                                                    $diasTotales = $meses * 30 + $dias;
+                                                    $diasRestantes = $duracion * 30 - $diasTotales;
+                                                    $mesesRestantes = $diasRestantes / 30;
+                                                    $mesesRestantes = round($mesesRestantes);
 
-                                        }
-                                            $i = $i + 1;
-                                        }
-									?>
-                                    </div>
+                                                    if($mesesRestantes <= 0){
+                                                        //pasar el pago del alumno a N
+                                                        $sql = "UPDATE alumno SET pago = 'N' WHERE id_usuario = ".$_SESSION['id_usuario']." AND id_curso = $id_curso";
+                                                        $conectado->query($sql);
+                                                        //actualizo el pagoCaducado de la tabla pago a N
+                                                        $sql = "UPDATE pagos SET pagoCaducado = 'Y' WHERE id = $id_pago";
+                                                        $conectado->query($sql);
+
+                                                    }
+                                                }else{
+                                                    $mesesRestantes = '--';    
+                                                }
+                                                    
+                                            ?>
+                                        </h4><!-- page subtitle end -->
+                                        <h4 class="post-heading post-heading-all post-heading-all-date">
+                                            Meses restantes: <span class="button-the-wrapper"><?php echo $mesesRestantes; ?></span>
+                                            (Meses)
+                                        </h4><!-- page subtitle end -->
+                                        <!-- page TXT start -->
+                                        <div class="inner-divider-half"></div><!-- divider end -->
+                                            <div class="section-intro">
+                                                <p>
+                                                    <?php echo $videos[0]["descripcion"];?>
+                                                </p>
+                                            </div><!-- page TXT end -->
+                                            <!--<div class="inner-divider"></div>divider end -->
+                                           <!-- <?php //if($mesesRestantes <= 0){ ?>
+                                            <div class="alert alert-danger text-center" role="alert">
+                                                <h4 class="alert-heading">Lo sentimos!</h4>
+                                                <p class="text-center">El tiempo de acceso a este curso ha expirado.</p>
+                                            </div>-->
+                                            <?php //} ?>
+                                            <div class="inner-divider-large"></div><!-- divider end -->
+                                            <?php
+                                            if(isset($array[$i]) AND $array[$i] == $curso["id"] AND isset($arrayPagos) AND $arrayPagos[$i] == 'Y' OR $arrayPagos[$i] != 'N'){
+                                                if($videos[0]["tipo"] == 'V' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                    echo '
+                                                    <div class="video-container">
+                                                        <iframe src="https://player.vimeo.com/video/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                    </div>';
+                                                }elseif($videos[0]["tipo"] == 'Y' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                echo '
+                                                    <div class="video-container">
+                                                        <iframe src="https://www.youtube.com/embed/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                    </div>';
+                                                }
+                                                $i= $i + 1;
+                                            }elseif(isset($_SESSION['id_usuario'])){
+                                                if($pais == PAIS){
+                                                    if($videos[0]["tipo"] == 'V' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                        echo '
+                                                        <div class="video-container">
+                                                            <iframe src="https://player.vimeo.com/video/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                        </div>';
+                                                        $moneda = 'pesos';
+                                                        echo '<form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
+                                                            </form>';
+                                                    }elseif($videos[0]["tipo"] == 'Y' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                    echo '
+                                                        <div class="video-container">
+                                                            <iframe src="https://www.youtube.com/embed/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                        </div>';
+                                                        $moneda = 'pesos';
+                                                        echo '<form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
+                                                            </form>';
+                                                    }else{
+                                                        $moneda = 'pesos';
+                                                        echo '
+                                                        <div class="" style="display: flex; align-items: center;justify-content: center;">
+                                                            <img class="" width="100%" style="margin-top:-1rem;" src="../../uploads/cursos/'.$curso["miniatura"].'" alt="img">
+                                                        </div>
+                                                        <form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">$ '.$curso['pesos'].' - Comprar</button>
+                                                        </form>';
+
+                                                    }
+                                                }else{
+                                                    if($videos[0]["tipo"] == 'V' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                        echo '
+                                                        <div class="video-container">
+                                                            <iframe src="https://player.vimeo.com/video/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                        </div>';
+                                                        $moneda = 'dolares';
+                                                        echo '<form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
+                                                            </form>';
+                                                    }elseif($videos[0]["tipo"] == 'Y' AND $videos[0]['es_presentacion'] == 'Y'){
+                                                    echo '
+                                                        <div class="video-container">
+                                                            <iframe src="https://www.youtube.com/embed/'.$videos[0]["id_video"].'"  height="" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                                        </div>';
+                                                        $moneda = 'dolares';
+                                                        echo '<form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
+                                                            </form>';
+                                                    }else{
+                                                        $moneda = 'dolares';
+                                                        echo '
+                                                        <div class="" style="display: flex; align-items: center;justify-content: center;">
+                                                            <img class="" width="100%" style="margin-top:-1rem;" src="../../uploads/cursos/'.$curso["miniatura"].'" alt="img">
+                                                        </div>
+                                                        <form style="display: flex; align-items: center;justify-content: center;" action="../../MercadoPago/index.php" method="post" target="">
+                                                                <input type="hidden" name="id_empresa" value='.$curso["id_empresa"].'>
+                                                                <input type="hidden" name="id_curso" value='.$curso['id'].'>
+                                                                <input type="hidden" name="titulo" value='.$curso['titulo_curso'].'>
+                                                                <input type="hidden" name="precio" value='.$curso['dolares'].'>
+                                                                <input type="hidden" name="moneda" value='.$moneda.'>
+                                                                <button style="margin-top:1rem;" type="submit" class="btn btn-success">USD '.$curso['dolares'].' - Comprar</button>
+                                                        </form>';
+
+                                                    }
+
+                                                }
+                                                $i = $i + 1;
+                                            }
+                                            ?>
+                                    </div><!-- fin tab-pane fade -->
+                                    <?php }//cierre del foreach cursos as curso ?>
+                                </div><!-- fin tab-content -->
+                                <!-- divider start -->
+                                <div class="inner-divider-half"></div><!-- divider end -->
+                                <div id="botonVolver" class="button-the-wrapper button-the-wrapper-modal"
+                                    style="display:flex;justify-content: space-around;">
+                                    <a class="" data-dismiss="" href="../../index.php">Pagina principal</a>
+                                    <a class="" data-dismiss="" href="../cerrar.php">Cerrar sesion</a>
                                 </div>
-                            </div>
+                            </div><!-- news modal body 1 end -->
+                        </div><!-- col end -->
+                    </div><!-- row end -->
+                </div><!-- container end -->
+            </div><!-- news modal content 1 end -->
+        </div><!-- news modal 1 end -->
 
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="fes2-img equal-height"><img class="port-main-img"
-                                            src="../../uploads/cursos/<?php echo $curso["miniatura"] ?>" alt="img"></div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <?php }} ?>
-                <!-- FIN FEATURES -->
-
-                <!-- DIVIDER -->
-                <hr class="mt-0 mb-0">
-                <!-- FOOTER 5 -->
-                <footer id="footer5" class="page-section pt-80 pb-50">
-                    <div class="container">
-                        <div class="footer-2-copy-cont clearfix">
-                            <!-- Social Links -->
-                            <div class="footer-2-soc-a right">
-                                <a href="https://1.envato.market/a1gQR" title="Facebook" target="_blank"><i
-                                        class="fa fa-facebook"></i></a>
-                                <a href="https://1.envato.market/a1gQR" title="Twitter" target="_blank"><i
-                                        class="fa fa-twitter"></i></a>
-                                <a href="https://1.envato.market/a1gQR" title="Behance" target="_blank"><i
-                                        class="fa fa-behance"></i></a>
-                                <a href="https://1.envato.market/a1gQR" title="LinkedIn+" target="_blank"><i
-                                        class="fa fa-linkedin"></i></a>
-                                <a href="https://dribbble.com/abcgomel" title="Dribbble" target="_blank"><i
-                                        class="fa fa-dribbble"></i></a>
-                            </div>
-
-                            <!-- Copyright -->
-                            <div class="left">
-                                <a class="footer-2-copy" href="https://1.envato.market/a1gQR" target="_blank">&copy;
-                                    HASWELL 2020</a>
-                            </div>
-
-
-                        </div>
-
-                    </div>
-                </footer>
-
-            </div> <!-- sliding-content -->
-
-            <!-- SIDE MENU -->
-            <nav id="cd-lateral-nav">
-                <ul class="cd-navigation cd-single-item-wrapper">
-                    <li><a href="index.php">Inicio</a></li>
-                    <li><a href="../../index.php">Comprar Cursos</a></li>
-                    <li><a href="index.php">Mis Cursos</a></li>
-                    <li><a href="../cerrar.php">Cerrar Sesion</a></li>
-                </ul> <!-- cd-single-item-wrapper -->
-            </nav><!-- END side menu -->
-
-            <!-- BACK TO TOP -->
-            <p id="back-top">
-                <a href="#top" title="Back to Top"><span class="icon icon-arrows-up"></span></a>
-            </p>
-
-        </div><!-- End BG -->
-    </div><!-- End wrap -->
-
-    <!-- JS begin -->
-
-    <!-- jQuery  -->
-    <script src="../../assetsNuevo/js/jquery-1.11.2.min.js"></script>
-
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../../assetsNuevo/js/bootstrap.min.js"></script>
-
-    <!-- MAGNIFIC POPUP -->
-    <script src='../../assetsNuevo/js/jquery.magnific-popup.min.js'></script>
-
-    <!-- PORTFOLIO SCRIPTS -->
-    <script src="../../assetsNuevo/js/isotope.pkgd.min.js"></script>
-    <script src="../../assetsNuevo/js/imagesloaded.pkgd.min.js"></script>
-    <script src="../../assetsNuevo/js/masonry.pkgd.min.js"></script>
-
-    <!-- COUNTER -->
-    <script src="../../assetsNuevo/js/jquery.countTo.js"></script>
-
-    <!-- APPEAR -->
-    <script src="../../assetsNuevo/js/jquery.appear.js"></script>
-
-    <!-- OWL CAROUSEL -->
-    <script src="../../assetsNuevo/js/owl.carousel.min.js"></script>
-
-    <!-- FLICKR WIDGET -->
-    <script src="../../assetsNuevo/js/jflickrfeed.min.js"></script>
-
-    <!-- JQUERY TWEETS -->
-    <script src="../../assetsNuevo/js/twitter/jquery.tweet.js"></script>
-
-    <!-- MAIN SCRIPT -->
-    <script src="../../assetsNuevo/js/main.js"></script>
-
-    <!-- SIDE MENU -->
-    <script src="../../assetsNuevo/js/side-menu.js"></script>
-
-    <!-- BACKGROUND VIDEO -->
-    <script src="../../assetsNuevo/js/jquery.backgroundvideo.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        if (!($("html").hasClass("mobile"))) {
-            var videobackground = new $.backgroundVideo($('.sm-video'), {
-                "align": "centerXY",
-                "width": 1920,
-                "height": 1080,
-                "path": "video/",
-                "filename": "The-Crosswalk",
-                "types": ["mp4", "webm"],
-                "autoplay": true,
-                "loop": true
-            });
+        <style>
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
         }
-    });
-    </script>
-    <!-- JS end -->
 
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+
+        <!-- funcion js para calcular las posiciones y arreglar espacio en negro -->
+        <script>
+        //detectar si la pantalla es menor a 768px
+        let width = $(window).width();
+        if (width < 992 || width < 768) {
+            let boton = document.getElementById("botonVolver");
+            let html = document.getElementById("html");
+            let cooBoton = boton.getBoundingClientRect();
+            let cooHtml = html.getBoundingClientRect();
+
+            let cooFinal = cooHtml.height - cooBoton.bottom - 6;
+            boton.style.marginTop = cooFinal + "px";
+            //detectar si es tama;o tablet
+        }
+        </script>
+
+        <script src="../../assetsFinal/js/plugins.js">
+        </script>
+        <script src="../../assetsFinal/js/ultimex.js">
+        </script><!-- scripts end -->
 </body>
 
 </html>

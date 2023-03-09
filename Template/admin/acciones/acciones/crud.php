@@ -7,6 +7,7 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
     $idUsuario = $_POST['idUsuario'];
     $nombreEmpresa = $_POST['nombreEmpresa'];
+    $descripcion = htmlspecialchars($_POST['descripcion'], ENT_QUOTES, 'UTF-8');
     $file = $_FILES['file1'];
     $fileName = $file['name'];
 
@@ -31,15 +32,34 @@ if(isset($_POST['agregarEmpresas-btn'])){
     //obtengo la ruta sin RUTAEMPRESAS
     $ruta = str_replace(RUTAEMPRESAS, "", $ruta);
 
-    $sentenciaSQL = $conn->query("INSERT INTO empresa (id_usuario,nombre_empresa,miniatura) VALUES ($idUsuario,'$nombreEmpresa','$ruta')");
+    //traigo si es una empresa de argentina y sus metodos de pago
+    if(isset($_POST['argentina'])){
+        $argentina = $_POST['argentina'];
+    }
+
+    if($argentina == 'si'){
+        $paisEmpresa = 'argentina';
+        $metodoMP = isset($_POST['mpArgentinaSi']) ? $_POST['mpArgentinaSi'] : '';
+        $metodoPaypal = isset($_POST['paypalArgentinaSi']) ? $_POST['paypalArgentinaSi'] : '';
+    }else{
+        if(isset($_POST['pais'])){
+            $paisEmpresa = $_POST['pais'];
+            $metodoPaypal = isset($_POST['paypal']) ? $_POST['paypal'] : '';
+            $metodoMP = isset($_POST['mercadopago']) ? $_POST['mercadopago'] : '';
+        }
+    }
+
+    $sentenciaSQL = $conn->query("INSERT INTO empresa (id_usuario,nombre_empresa,miniatura,mercadopago,paypal,pais,descripcion) VALUES ($idUsuario,'$nombreEmpresa','$ruta','$metodoMP','$metodoPaypal','$paisEmpresa','$descripcion')");
     
     if($sentenciaSQL){
         if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
             $_SESSION['success'] = 'Empresa creada con exito';
-            header ('Location: ../../admin.php');
+            echo '<script>window.location.href = "../../admin.php";</script>';
+           // header ('Location: ../../admin.php');
         }else{
             $_SESSION['error'] = 'Error al crear la empresa';
-            header ('Location: ../../admin.php');
+            echo '<script>window.location.href = "../../admin.php";</script>';
+            //header ('Location: ../../admin.php');
         }        
     }
     else{
@@ -79,10 +99,12 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
         if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
             $_SESSION['success'] = 'Cuenta creada con exito';
-            header ('Location: ../../usuarios.php');
+            echo '<script>window.location.href = "../../usuarios.php";</script>';
+            //header ('Location: ../../usuarios.php');
         }else{
             $_SESSION['error'] = 'Error al crear la cuenta';
-            header ('Location: ../../usuarios.php');
+            echo '<script>window.location.href = "../../usuarios.php";</script>';
+            //header ('Location: ../../usuarios.php');
         }
         
     }
@@ -92,8 +114,26 @@ if(isset($_POST['agregarEmpresas-btn'])){
 }elseif(isset($_POST['editarEmpresas-btn'])){
     $idEmpresa = isset($_POST['idEmpresa']) ? $_POST['idEmpresa'] : '';
     $nombreEmpresa = isset($_POST['nombreEmpresa']) ? $_POST['nombreEmpresa'] : '';
+    $descripcion = htmlspecialchars($_POST['descripcion'], ENT_QUOTES, 'UTF-8');
     $file = isset($_FILES['file1']) ? $_FILES['file1'] : '';
     $fileName = isset($file['name']) ? $file['name'] : '';
+
+    //traigo si es una empresa de argentina y sus metodos de pago
+    if(isset($_POST['argentina'])){
+        $argentina = $_POST['argentina'];
+    }
+
+    if($argentina == 'si'){
+        $paisEmpresa = 'argentina';
+        $metodoMP = isset($_POST['mpArgentinaSi']) ? $_POST['mpArgentinaSi'] : '';
+        $metodoPaypal = isset($_POST['paypalArgentinaSi']) ? $_POST['paypalArgentinaSi'] : '';
+    }else{
+        if(isset($_POST['pais'])){
+            $paisEmpresa = $_POST['pais'];
+            $metodoPaypal = isset($_POST['paypal']) ? $_POST['paypal'] : '';
+            $metodoMP = isset($_POST['mercadopago']) ? $_POST['mercadopago'] : '';
+        }
+    }
 
     //Obtengo los datos de la empresa
     $sentenciaSQL = $conn->query("SELECT * FROM empresa WHERE id = $idEmpresa");
@@ -102,54 +142,48 @@ if(isset($_POST['agregarEmpresas-btn'])){
     //Si no se selecciona una imagen nueva, se mantiene la anterior
     if($fileName == ''){
         $fileName = $empresa['miniatura'];
-    }
+    }else{
 
-    //Actualizo los datos de la empresa si solo se cambia el nombre
-    if($fileName == $empresa['miniatura']){
-        $sentenciaSQL = $conn->query("UPDATE empresa SET nombre_empresa = '$nombreEmpresa' WHERE id = $idEmpresa");
-    }elseif($nombreEmpresa == $empresa['nombre_empresa']){
-        //Actualizo los datos de la empresa si solo se cambia la imagen 
+         //Actualizo los datos de la empresa si solo se cambia la imagen 
         //quitar espacios en blanco
         $fileName = preg_replace('/\s+/', '', $fileName);
         $fileName = strtolower($fileName);
         $fileName = str_replace(" ", "", $fileName);
         
         //muevo la imagen a la carpeta con el nombre con la fecha y hora actual y el nombre de la imagen y la extencion
-        $ruta = RUTAEMPRESAS . date("Y-m-d-H-i-s") . $fileName;
+        $fileName = RUTAEMPRESAS . date("Y-m-d-H-i-s") . $fileName;
         
         //Compruebo si exise una imagen con el mismo nombre 
-        if(file_exists($ruta)){
+        if(file_exists($fileName)){
                 //si existe le agrego un numero al fina
-            $ruta = RUTAEMPRESAS . date("Y-m-d-H-i-s") . rand(0, 100) . $fileName;
+            $fileName = RUTAEMPRESAS . date("Y-m-d-H-i-s") . rand(0, 100) . $fileName;
             //Elimino la imagen anterior
             unlink(RUTAEMPRESAS . $empresa['miniatura']);
-            move_uploaded_file($file['tmp_name'], $ruta);
+            move_uploaded_file($file['tmp_name'], $fileName);
         }else{
                 //muevo la imagen a la carpeta
             //unlink(RUTAEMPRESAS . $empresa['miniatura']);
-            move_uploaded_file($file['tmp_name'], $ruta);
-        }        
+            move_uploaded_file($file['tmp_name'], $fileName);
+        }
         //obtengo la ruta sin RUTAEMPRESAS
-        $ruta = str_replace(RUTAEMPRESAS, "", $ruta);       
-        $sentenciaSQL = $conn->query("UPDATE empresa SET miniatura = '$ruta' WHERE id = $idEmpresa");
-    }else{
-        //Actualizo los datos de la empresa si se cambia el nombre y la imagen
-        $sentenciaSQL = $conn->query("UPDATE empresa SET nombre_empresa = '$nombreEmpresa', miniatura = '$fileName' WHERE id = $idEmpresa");
-    }
+        $fileName = str_replace(RUTAEMPRESAS, "", $fileName);       
+    } 
+    $sentenciaSQL = $conn->query("UPDATE empresa SET nombre_empresa = '$nombreEmpresa', miniatura = '$fileName', mercadopago = '$metodoMP',paypal = '$metodoPaypal',pais = '$paisEmpresa', descripcion = '$descripcion' WHERE id = $idEmpresa");   
     
     if($sentenciaSQL){
         if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
             $_SESSION['success'] = 'Empresa actualizada con exito';
-            header ('Location: ../editarEmpresas.php?id_empresa='.$idEmpresa);
+            echo '<script>window.location.href = "../editarEmpresas.php?id_empresa='.$idEmpresa.'";</script>';
         }else{
             $_SESSION['error'] = 'Error al actualizar la empresa';
-            header ('Location: ../editarEmpresas.php?id_empresa='.$idEmpresa);
+            echo '<script>window.location.href = "../editarEmpresas.php?id_empresa='.$idEmpresa.'";</script>';
         }
     }
     else{
         echo mysqli_error($conn);
     }
 }else if(isset($_POST['agregarCursos-btn'])){
+    $descripcion = htmlspecialchars($_POST['cursodesc'], ENT_QUOTES, 'UTF-8');
     $titulo = $_POST['titulo'];
     $precioPesos = $_POST['precioPesos'];
     $precioDolares = $_POST['precioDolares'];
@@ -182,15 +216,17 @@ if(isset($_POST['agregarEmpresas-btn'])){
     $ruta = str_replace(RUTACURSOS, "", $ruta);
 
     //inserto el curso
-    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,dolares,pesos,duracion) VALUES ($idEmpresa,$idProfesor,'$titulo','$ruta','$precioDolares',$precioPesos,'$duracion')");
+    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,dolares,pesos,duracion,descripcion) VALUES ($idEmpresa,$idProfesor,'$titulo','$ruta','$precioDolares',$precioPesos,'$duracion','$descripcion')");
     
     if($sentenciaSQL){
         if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
             $_SESSION['success'] = 'Curso creado con exito';
-            header ('Location: ../../admin.php');
+            echo '<script>window.location.href = "../../admin.php";</script>';
+            //header ('Location: ../../admin.php');
         }else{
             $_SESSION['error'] = 'Error al crear el curso';
-            header ('Location: ../../admin.php');
+            echo '<script>window.location.href = "../../admin.php";</script>';
+            //header ('Location: ../../admin.php');
         }        
     }else{
         echo mysqli_error($conn);
@@ -247,10 +283,12 @@ if(isset($_POST['agregarEmpresas-btn'])){
     
     if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
         $_SESSION['success'] = 'Video agregado con exito';
-        header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+        echo '<script>window.location.href = "../verCursos.php?id_empresa='.$id_empresa.'";</script>';
+        //header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
     }else{
         $_SESSION['error'] = 'Error al agregar video';
-        header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+        echo '<script>window.location.href = "../verCursos.php?id_empresa='.$id_empresa.'";</script>';
+        //header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
     }
 
 }else if(isset($_POST['deleteVideo-btn'])){
@@ -263,7 +301,8 @@ if(isset($_POST['agregarEmpresas-btn'])){
     $id = $_POST['id'];    
     $conn->query("DELETE * FROM videos WHERE id = $id");
 
-    header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+    echo '<script>window.location.href = "../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor.'";</script>';
+   // header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
 
 }else if(isset($_POST['editVideo-btn'])){
     
@@ -276,10 +315,12 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
     if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
         $_SESSION['success'] = 'Video editado con exito';
-        header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+        echo '<script>window.location.href = "../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor.'";</script>';
+        //header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }else{
         $_SESSION['error'] = 'Error al editar video';
-        header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+        echo '<script>window.location.href = "../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor.'";</script>';
+        //header ('Location: ../editarVideos2.php?id='.$id.'&id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }
 
 }else if(isset($_POST['updateVideo-btn'])){
@@ -367,14 +408,17 @@ if(isset($_POST['agregarEmpresas-btn'])){
 
     if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
         $_SESSION['success'] = 'Video editado con exito';
-        header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+        echo '<script>window.location.href = "../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor.'";</script>';
+        //header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }else{
         $_SESSION['error'] = 'Error al editar video';
-        header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
+        echo '<script>window.location.href = "../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor.'";</script>';
+        //header ('Location: ../editarVideos.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&id_profesor='.$id_profesor);
     }
 
 }else if(isset($_POST['editarCursos-btn'])){
     
+    $descripcion = htmlspecialchars($_POST['cursodesc'], ENT_QUOTES, 'UTF-8');
     $titulo = $_POST['vidtitle'];
     $duracion = $_POST['duracion'];
     $precioPesos = $_POST['precioPesos'];
@@ -418,18 +462,20 @@ if(isset($_POST['agregarEmpresas-btn'])){
         //obtengo la ruta sin RUTAEMPRESAS
         $ruta = str_replace(RUTACURSOS, "", $ruta);
 
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$ruta',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$ruta',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion, descripcion = '$descripcion' WHERE id = $id_curso");
     }else if($fileName == ''){
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion, descripcion = '$descripcion' WHERE id = $id_curso");
     }
     
     if($sentenciaSQL){
         if(!isset($_SESSION['success']) OR !isset($_SESSION['error'])){
             $_SESSION['success'] = 'Curso creado con exito';
-            header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+            echo '<script>window.location.href = "../verCursos.php?id_empresa='.$id_empresa.'";</script>';
+            //header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
         }else{
             $_SESSION['error'] = 'Error al crear el curso';
-            header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
+            echo '<script>window.location.href = "../verCursos.php?id_empresa='.$id_empresa.'";</script>';
+            //header ('Location: ../verCursos.php?id_empresa='.$id_empresa);
         }        
     }else{
         echo mysqli_error($conn);

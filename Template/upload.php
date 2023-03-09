@@ -9,6 +9,7 @@ use Vimeo\Vimeo;*/
 if(isset($_POST['upload-btn'])){
 
     //$descripcion = $_POST['viddesc'];
+    $descripcionCruso = htmlspecialchars($_POST['cursodesc'], ENT_QUOTES, 'UTF-8');
     $titulo = $_POST['vidtitle'];
     $duracion = $_POST['duracion'];
     $precioPesos = $_POST['precioPesos'];
@@ -46,7 +47,7 @@ if(isset($_POST['upload-btn'])){
     $ruta = str_replace(RUTACURSOS, "", $ruta);   
 
     //$sentenciaSQL = $conn->query("INSERT INTO videos (id_usuario,id_curso,id_empresa,id_video,titulo_video,descripcion,miniatura) VALUES (2,4,$id_empresa,'$link','$titulo','$descripcion','1.png')");
-    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,dolares,pesos,duracion) VALUES ($id_empresa,$id_profesor,'$titulo','$ruta','$precioDolares','$precioPesos',$duracion)");
+    $sentenciaSQL = $conn->query("INSERT INTO cursos (id_empresa,id_profesor,titulo_curso,miniatura,dolares,pesos,duracion,descripcion) VALUES ($id_empresa,$id_profesor,'$titulo','$ruta','$precioDolares','$precioPesos',$duracion,'$descripcionCruso')");
 
     if($sentenciaSQL){
         header ('Location: /pablo/Template/profesor/index.php');

@@ -5,6 +5,7 @@ include '../config.php';//BD
 if(isset($_POST['upload-btn'])){
     $conn = conectar();
     
+    $descripcion = htmlspecialchars($_POST['cursodesc'], ENT_QUOTES, 'UTF-8');
     $titulo = $_POST['vidtitle'];
     $duracion = $_POST['duracion'];
     $precioPesos = $_POST['precioPesos'];
@@ -47,9 +48,9 @@ if(isset($_POST['upload-btn'])){
      $ruta = str_replace(RUTACURSOS, "", $ruta);
 
     if($fileName != $imagen AND $fileName != ''){
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$ruta',dolares = '$precioDolares', pesos = '$preciosPesos', duracion = $duracion WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo', miniatura = '$ruta',dolares = '$precioDolares', pesos = '$preciosPesos', duracion = $duracion, descripcion = '$descripcion' WHERE id = $id_curso");
     }else if($fileName == ''){
-        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion WHERE id = $id_curso");
+        $sentenciaSQL = $conn->query("UPDATE cursos SET titulo_curso = '$titulo',dolares = '$precioDolares', pesos = '$precioPesos', duracion = $duracion, descripcion = '$descripcion' WHERE id = $id_curso");
     }
     
     if($sentenciaSQL){

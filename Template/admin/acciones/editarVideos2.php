@@ -3,6 +3,11 @@ session_start();
 include '../../../config.php';
 $conectado = conectar();
 
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../../login.php";</script>';
+}
+
+
 $id = $_GET['id'];
 
 isset($_GET['id_curso']) ? $id_curso = $_GET['id_curso'] : $id_curso = '';
@@ -35,12 +40,12 @@ include 'Template/head.php';
             <!--navigation-->
             <ul class="metismenu" id="menu">
                 <li>
-                    <a href="javascript:;" class="has-arrow">
+                    <a href="javascript:;" class="has-arrow" aria-expanded="true">
                         <div class="parent-icon"><img src="../../../assetsNuevo/iconos/home2.gif" width="30px" height="">
                         </div>
                         <div class="menu-title">Panel administrador</div>
                     </a>
-                    <ul>
+                    <ul class="mm-collapse mm-show">
                     <li> <a href="agregarEmpresas.php"><img src="../../../assetsNuevo/iconos/mas2.gif" width="40px" height="">Agregar Empresas</a>
 						</li>
 						<li> <a href="../pagos.php"><img src="../../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
@@ -57,24 +62,35 @@ include 'Template/head.php';
         </div>
         <!--end sidebar wrapper -->
         <!--start header -->
-        <header>
-            <div class="topbar d-flex align-items-center">
-                <nav class="navbar navbar-expand">
-                    <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
-                    </div>
-                    <div class="user-box dropdown">
-                        <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">	
-                            <div class="user-info ps-3">
-                                <p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
-                                <p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
-                            </div>
-                        </a>
-                    </div>
-                </nav>
-            </div>
-        </header>
+		<header>
+			<div class="topbar d-flex align-items-center">
+				<nav class="navbar navbar-expand">
+					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+					</div>
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
         <!--end header -->
         <!--start page wrapper -->
         <div class="page-wrapper">
@@ -173,7 +189,7 @@ include 'Template/head.php';
                                                         width="100px" style="margin-bottom:5px;" alt="">
                                                 </div>
                                             </div>
-                                            <button type="submit" name="updateVideo-btn" class="btn btn-success"><img src="../../../assetsNuevo/iconos/ok2.gif" width="40px" height="">Editar</button>
+                                            <button type="submit" name="updateVideo-btn" class="btn btn-success"><img src="../../../assetsNuevo/iconos/ok2.gif" width="40px" height="">Guardar</button>
                                         </form>
                                     </div>
                                 </div>

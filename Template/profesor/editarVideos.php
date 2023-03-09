@@ -3,6 +3,11 @@ session_start();
 include '../../config.php';
 $conectado = conectar();
 
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../login.php";</script>';
+	//header("location: ../login.php");
+}
+
 $id = $_GET['id'];
 
 $resultado = $conectado->query("SELECT * FROM videos WHERE id = $id");
@@ -30,19 +35,19 @@ include 'Template/head.php';
 			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				<li>
-					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+					<a href="javascript:;" class="has-arrow" aria-expanded="true">
+						<div class="parent-icon"><img src="../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
-						<div class="menu-title">Dashboard</div>
+						<div class="menu-title">Panel administrador</div>
 					</a>
-					<ul>
-						<li> <a href="cursos.php"><i class="bx bx-right-arrow-alt"></i>Ver Cursos</a>
+					<ul class="mm-collapse mm-show">
+						<li> <a href="cursos.php"><img src="../../assetsNuevo/iconos/pass2.gif" width="40px" height="">Ver Cursos</a>
 						</li>
-						<li> <a href="verVideos.php"><i class="bx bx-right-arrow-alt"></i>Ver Videos</a>
+						<li> <a href="verVideos.php"><img src="../../assetsNuevo/iconos/youtube2.gif" width="40px" height="">Ver Videos</a>
 						</li>
-						<li> <a href="pagos.php"><i class="bx bx-right-arrow-alt"></i>Pagos</a>
+						<li> <a href="pagos.php"><img src="../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
 						</li>
-						<li><a href="../cerrar.php"><i class="bx bx-right-arrow-alt"></i>Cerrar Sesion</a></li>
+						<li><a href="../cerrar.php"><img src="../../assetsNuevo/iconos/exit2.gif" width="40px" height="">Cerrar Sesion</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -55,14 +60,26 @@ include 'Template/head.php';
 				<nav class="navbar navbar-expand">
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
-					<div class="user-box dropdown">
-						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<!--<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">-->
-							<div class="user-info ps-3">
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
 								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
-							</div>
-						</a>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</nav>
 			</div>
@@ -74,14 +91,14 @@ include 'Template/head.php';
 				<div class="container">
 					<div class="main-body">
 						<div class="row">
-							<div class="col-lg-8">
+							<div class="col-lg-10">
 								<div class="card">
-								<h2> Editar Video</h2>
+								<h2><img src="../../assetsNuevo/iconos/youtube2.gif" width="40px" height=""> Editar Video</h2>
 									<div class="card-body">
 										<form action="../eliminarEditarVideo.php" method="POST" enctype="multipart/form-data">
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 class="mb-0">Titulo</h6>
+													<h6 class="mb-0"><img src="../../assetsNuevo/iconos/editar2.gif" width="40px" height=""> Titulo</h6>
 												</div>
 												<div class="col-sm-9">
                                                     <input type="hidden" name="id" class="form-control" value="<?php echo $videos[0]['id']; ?>" />
@@ -90,7 +107,7 @@ include 'Template/head.php';
 											</div>
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 class="mb-0">Descripcion</h6>
+													<h6 class="mb-0"><img src="../../assetsNuevo/iconos/editar2.gif" width="40px" height=""> Descripcion</h6>
 												</div>
 												<div class="col-sm-9">
 													<textarea name="viddesc" class="form-control" rows="6" maxlength="300"><?php echo $videos[0]['descripcion']; ?></textarea>
@@ -100,7 +117,7 @@ include 'Template/head.php';
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-                                                    <h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" value="V" <?php if($videos[0]['tipo'] == 'V'){ echo 'checked="checked"'; } ?>> Link Vimeo</h6>
+                                                    <h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="vimeo" value="V" <?php if($videos[0]['tipo'] == 'V'){ echo 'checked="checked"'; } ?>><img src="../../assetsNuevo/iconos/vimeo2.gif" width="40px" height=""> Link Vimeo</h6>
                                                 </div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkVimeo" id="linkVimeo" class="form-control" value="<?php if($videos[0]['tipo'] == 'V'){ echo $videos[0]['id_video']; } ?>" />
@@ -110,7 +127,7 @@ include 'Template/head.php';
 												<!--<h6 for="inputProductDescription" class="form-label">Video</h6>
 												<input class="form-control" type="file" name="file1" accept="video/*" multiple>-->
 												<div class="col-sm-3">
-													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="Y" <?php if($videos[0]['tipo'] == 'Y'){ echo 'checked="checked"'; } ?>> Link Youtube</h6>
+													<h6 class="mb-0"><input onclick="habilitar();" type="radio" name="link" id="youtube" value="Y" <?php if($videos[0]['tipo'] == 'Y'){ echo 'checked="checked"'; } ?>><img src="../../assetsNuevo/iconos/youtube2.gif" width="40px" height=""> Link Youtube</h6>
 												</div>
 												<div class="col-sm-9">
 													<input type="text"  name="linkYoutube" id="linkYoutube" class="form-control" value="<?php if($videos[0]['tipo'] == 'Y'){ echo $videos[0]['id_video']; } ?>" />
@@ -119,7 +136,7 @@ include 'Template/head.php';
 
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 class="mb-0">Video de presentacion</h6>
+													<h6 class="mb-0"><img src="../../assetsNuevo/iconos/sino2.gif" width="40px" height=""> Video de presentacion</h6>
 												</div>
 												<div class="col-sm-3">
 													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="Y" <?php if($videos[0]['es_presentacion'] == 'Y'){ echo 'checked="checked"'; } ?>> Si</h6>
@@ -129,7 +146,7 @@ include 'Template/head.php';
 
 											<div class="row mb-3">
 												<div class="col-sm-3">
-													<h6 for="inputProductDescription" class="form-label">Miniatura</h6>
+													<h6 for="inputProductDescription" class="form-label"><img src="../../assetsNuevo/iconos/foto2.gif" width="40px" height=""> Miniatura</h6>
 												</div>
 												<div class="col-sm-9">
 													<input class="form-control" type="file" name="file1" accept="jpg" multiple>
@@ -140,7 +157,7 @@ include 'Template/head.php';
                                                     <img src="../../uploads/videos/miniaturas/<?php echo $videos[0]['miniatura']; ?>" width="100px" style="margin-bottom:5px;" alt="">
                                                 </div>
                                             </div>
-											<button type="submit" name="upload-btn" class="btn btn-success"><i class=""></i>Editar</button>
+											<button type="submit" name="upload-btn" class="btn btn-success"><img src="../../assetsNuevo/iconos/ok2.gif" width="40px" height="">Editar</button>
 										</form>
 									</div>
 								</div>
@@ -151,6 +168,6 @@ include 'Template/head.php';
 			</div>
 		</div>
 <?php
-include 'Template/footer.php';
+//include 'Template/footer.php';
 ?>
 <script src="js.js"></script>

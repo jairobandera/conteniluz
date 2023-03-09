@@ -3,16 +3,41 @@ ob_start();
 session_start();
 include 'config.php';
 
-if(isset($_POST['login'])){//viene del login
-    /*Creo nuevo usuario*/
+if(isset($_POST['login']) AND isset($_SESSION['comprar'])){
+    //viene del login y con un usario registrado que quiere comprar
+    //Compruebo si ese usuario ya compro ese curso de esa empresa
     if (isset($_POST['usuario']) && isset($_POST['password'])) {
         $usuario = $_POST['usuario'];
         $password = md5($_POST['password']);
-    
+        comprobarUsuario($usuario, $password);
+    }    
+    $conectado = conectar();
+    $id_curso = $_SESSION['id_curso'];
+    $id_empresa = $_SESSION['id_empresa'];
+    $id_usuario = $_SESSION['id_usuario'];
+
+    $sql = "SELECT pago FROM alumno WHERE id_usuario =  '$id_usuario' AND id_curso = '$id_curso'";
+    $resultado = mysqli_query($conectado, $sql);
+    $row = mysqli_fetch_array($resultado);
+    if($row['pago'] == 1){
+        //Ya compro ese curso por lo tanto lo redirijo a la pagina de inicio del alumno
+        echo "Ya compro ese curso por lo tanto lo redirijo a la pagina de inicio del alumno";
+        //header('Location: ../index.php');
+    }else{
+        $_SESSION['monedaLogin'] = $_SESSION['moneda'];
+        header('Location: MercadoPago/index.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa);
+        
+    }
+
+}elseif(isset($_POST['login'])){//viene del login
+    if (isset($_POST['usuario']) && isset($_POST['password'])) {
+        $usuario = $_POST['usuario'];
+        $password = md5($_POST['password']);
+
         comprobarUsuario($usuario, $password);
         tipo();
     }
-    }else if(isset($_POST['registrar']) AND isset($_SESSION['id_empresa'])){//viene del registrar nuevo usuario
+}else if(isset($_POST['registrar']) AND isset($_SESSION['id_empresa'])){//viene del registrar nuevo usuario
     $conectado = conectar();
     $_SESSION['nombre_alumno'] = $nombre = $_POST['nombre'];
     $_SESSION['apellido_alumno'] = $apellido = $_POST['apellido'];
@@ -84,14 +109,15 @@ function tipo(){
             $_SESSION['nombre_alumno'] = $fila['nombre'];
             $_SESSION['apellido_alumno'] = $fila['apellido'];
             $_SESSION['telefono'] = $fila['telefono'];
-            if(isset($_SESSION['id_empresa'])){
+            echo '<script>window.location.href = "Template/alumno/index.php";</script>';
+            /*if(isset($_SESSION['id_empresa'])){
                 $id_empresa = $_SESSION['id_empresa'];
                 //header('Location: Template/alumno/index.php?id_empresa='.$id_empresa);
                 echo '<script>window.location.href = "Template/alumno/index.php?id_empresa='.$id_empresa.'";</script>';
             }else{
                 //header('Location: Template/alumno/index.php');
                 echo '<script>window.location.href = "Template/alumno/index.php?";</script>';
-            }            
+            } */           
         }else if($_SESSION['tipo'] == 'PROFESOR'){
             $usuario = $_POST['usuario'];
             $password = md5($_POST['password']);
@@ -141,7 +167,7 @@ function validarAlumnoCurso($usuario, $password,$id_curso){
                 $_SESSION['tipo'] = $fila['tipo'];
                 desconectar($conectado);
                 $id_empresa = $_SESSION['id_empresa'];
-                header('Location: Template/cursos.php?id_empresa='.$id_empresa);
+                echo '<script>window.location.href = "Template/alumno/index.php";</script>';
                 
             }else{
             //echo $fila['id'];
@@ -168,10 +194,10 @@ function validarAlumnoCurso($usuario, $password,$id_curso){
                         desconectar($conectado);
                         if(isset($_SESSION['id_empresa'])){
                             $id_empresa = $_SESSION['id_empresa'];
-                            header('Location: Template/cursos.php?id_empresa='.$id_empresa);
+                            echo '<script>window.location.href = "Template/alumno/index.php";</script>';
                             //header($concatenar);
                         }else{
-                            header('Location: Template/alumno/index.php');
+                            echo '<script>window.location.href = "Template/alumno/index.php";</script>';
                         }
                         
                     }else{
@@ -193,6 +219,11 @@ function comprobarUsuario($usuario, $password){
                     $_SESSION['usuario'] = $fila['usuario'];
                     $_SESSION['tipo'] = $fila['tipo'];
                     $_SESSION['id_usuario'] = $fila['id'];
+
+                    $_SESSION['nombre_alumno'] = $fila['nombre'];
+                    $_SESSION['apellido_alumno'] = $fila['apellido'];
+                    $_SESSION['telefono'] = $fila['telefono'];
+                    $_SESSION['tipo'] = $fila['tipo'];
                     desconectar($conectado);
                 }else{
                     //falta hacer si no existe el usuario;

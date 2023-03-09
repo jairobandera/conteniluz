@@ -1,35 +1,23 @@
 <?php
 session_start();
 
-/*if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'USUARIO'){
-	header('Location: ../MercadoPago/index.php');
-}else if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'PROFESOR'){
-	echo '<script>alert("Ingrese como alumno");</script>';
-}else if(isset($_SESSION['pagar']) AND $_SESSION['pagar'] == 1 AND isset($_SESSION['tipo']) AND $_SESSION['tipo'] == 'ADMIN'){
-	echo '<script>alert("Ingrese como alumno");</script>';
+if(isset($_SESSION['habilitarCrearCuenta']) AND $_SESSION['habilitarCrearCuenta'] == true){
+    $habilitarCrearCuenta = true;
+    unset($_SESSION['habilitarCrearCuenta']);
 }else{
-	if(isset($_SESSION['tipo'])){
-		if($_SESSION['tipo'] == 'ADMIN'){
-			header('Location: admin/index.php');
-		}else if($_SESSION['tipo'] == 'USUARIO'){
-				header('Location: alumno/index.php');
-		}else if($_SESSION['tipo'] == 'PROFESOR'){
-				header('Location: profesor/index.php');
-		}else{
-				header('Location: index.php');
-		}
-	}
-}*/
-if(isset($_SESSION['id_empresa'])){
-    $id_empresa = $_SESSION['id_empresa'];
+    $habilitarCrearCuenta = false;
+}
+
+if(isset($_SESSION['precio'])){
+    $precio = $_SESSION['precio'];
 }
 
 if(isset($_SESSION['tipo'])){
 	if($_SESSION['tipo'] == 'ADMIN'){
-		header('Location: admin/index.php');
+		header('Location: admin/admin.php');
 	}else if($_SESSION['tipo'] == 'USUARIO'){
 			//header('Location: alumno/index.php?id_empresa='.$id_empresa);
-            echo '<script>window.location.href = "alumno/index.php?id_empresa='.$id_empresa.'";</script>';
+            echo '<script>window.location.href = "alumno/index.php";</script>';
 	}else if($_SESSION['tipo'] == 'PROFESOR'){
 			//header('Location: profesor/index.php');
             echo '<script>window.location.href = "profesor/index.php";</script>';
@@ -50,7 +38,7 @@ if(isset($_SESSION['tipo'])){
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--favicon-->
-    <link rel="icon" href="../assets/assets/images/favicon-32x32.png" type="image/png" />
+    <link rel="icon" href="../assets/assets/images/icono.png" type="image/png" />
     <!-- loader-->
     <link href="../assets/assets/css/pace.min.css" rel="stylesheet" />
     <script src="../assets/assets/js/pace.min.js"></script>
@@ -104,7 +92,7 @@ if(isset($_SESSION['tipo'])){
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <?php if(isset($_SESSION['id_empresa']) AND isset($_SESSION['id_curso'])){ 
+                                                <?php if($habilitarCrearCuenta == true){ 
                                                     echo '<a href="register.php" style="text-align:center;"><h3>Crear una cuenta</h3></a>'; 
                                                 } ?>
                                             </div>
@@ -119,6 +107,11 @@ if(isset($_SESSION['tipo'])){
                                                         }
                                                     ?>
                                                     <button type="submit" name="login" class="btn btn-light"><img src="../assetsNuevo/iconos/candado.gif" width="30px" height="">Inisiar sesion</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-grid">
+                                                    <a href="../" class="btn btn-light"><img src="../assetsNuevo/iconos/exit.gif" width="30px" height="">Pagina princial</a>
                                                 </div>
                                             </div>
                                         </form>

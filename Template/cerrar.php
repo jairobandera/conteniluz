@@ -1,6 +1,6 @@
 <?php
 //incluyo carpeta config
-include_once '../config.php';
+//include_once '../config.php';
 
 session_start();
 $_SESSION = array();

@@ -3,8 +3,14 @@ session_start();
 include '../../config.php';
 $conectado = conectar();
 
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../login.php";</script>';
+	//header("location: ../login.php");
+}
+
+
 $id_profesor = $_SESSION['id_profesor'];
-$resultado = $conectado->query("SELECT u.nombre,u.telefono, u.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.fecha_caducidad FROM pagos AS p, usuario AS u WHERE EXISTS(
+$resultado = $conectado->query("SELECT u.nombre,u.telefono, u.apellido, p.payment_type, p.`status`, p.monto, p.fecha_pago, p.pagoCaducado FROM pagos AS p, usuario AS u WHERE EXISTS(
 	SELECT * FROM alumno AS a WHERE a.id_usuario = u.id AND a.id_curso = p.id_curso AND a.id = p.id_alumno)");
 $pagos = $resultado->fetch_all(MYSQLI_ASSOC);
 
@@ -22,7 +28,7 @@ include 'Template/head.php';
 					<img src="../../assets/assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
 				</div>
 				<div>
-					<h4 class="logo-text">Dashtrans</h4>
+					<h4 class="logo-text">InstituZion</h4>
 				</div>
 				<div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
 				</div>
@@ -30,15 +36,15 @@ include 'Template/head.php';
 			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				<li>
-					<a href="javascript:;" class="has-arrow">
-						<div class="parent-icon"><i class='bx bx-home-circle'></i>
+					<a href="javascript:;" class="has-arrow" aria-expanded="true">
+						<div class="parent-icon"><img src="../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
-						<div class="menu-title">Dashboard</div>
+						<div class="menu-title">Panel administrador</div>
 					</a>
-					<ul>
-						<li> <a href="index.php"><i class="bx bx-right-arrow-alt"></i>Agregar Curso</a>
+					<ul class="mm-collapse mm-show">
+						<li> <a href="index.php"><img src="../../assetsNuevo/iconos/mas2.gif" width="40px" height="">Agregar Curso</a>
 						</li>
-						<li> <a href="cursos.php"><i class="bx bx-right-arrow-alt"></i>Ver Cursos</a>
+						<li> <a href="cursos.php"><img src="../../assetsNuevo/iconos/pass2.gif" width="40px" height="">Ver Cursos</a>
 						</li>
 					</ul>
 				</li>
@@ -52,14 +58,26 @@ include 'Template/head.php';
 				<nav class="navbar navbar-expand">
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
-					<div class="user-box dropdown">
-						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../assets/assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar">
-							<div class="user-info ps-3">
-								<p class="user-name mb-0">Pauline Seitz</p>
-								<p class="designattion mb-0">Web Designer</p>
-							</div>
-						</a>
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_profesor']; ?></p>
+								<p class="designattion mb-0"><?php echo $_SESSION['apellido_profesor']; ?></p>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</nav>
 			</div>
@@ -67,7 +85,7 @@ include 'Template/head.php';
 		<!--end header -->
         <div class="page-wrapper">
 			<div class="page-content">
-                <h6 class="mb-0 text-uppercase">DataTable Example</h6>
+                <h6 class="mb-0 text-uppercase"><img src="../../assetsNuevo/iconos/pagos2.gif" width="40px" height=""> Pagos realizados</h6>
                         <hr/>
                         <div class="card">
                             <div class="card-body">
@@ -100,7 +118,7 @@ include 'Template/head.php';
 													 ?>><?php echo $pago['status']; ?></td>
 													<td><?php echo $pago['monto']; ?></td>
 													<td><?php echo $pago['fecha_pago']; ?></td>
-													<td><?php echo $pago['fecha_caducidad']; ?></td>
+													<td><?php echo $pago['pagoCaducado']; ?></td>
 												</tr>
 											<?php } ?>
                                         <tfoot>
@@ -121,6 +139,3 @@ include 'Template/head.php';
                     </div>
                 </div>
 
-<?php
-include 'Template/footer.php';
-?>

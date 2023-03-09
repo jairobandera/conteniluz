@@ -1,7 +1,7 @@
 		<!--end page wrapper -->
-		<footer class="page-footer">
+		<!--<footer class="page-footer">
 			<p class="mb-0">Copyright © 2021. All right reserved.</p>
-		</footer>
+		</footer>-->
 	</div>
 	<!-- sweetalerts2-->
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

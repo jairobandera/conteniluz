@@ -2,7 +2,7 @@
 session_start();
 //$_SESSION['pagar'] = true;
 
-if(isset($_GET['id_curso']) || isset($_POST['id_curso']) && isset($_POST['id_empresa']) || isset($_GET['id_empresa'])){
+/*if(isset($_GET['id_curso']) || isset($_POST['id_curso']) && isset($_POST['id_empresa']) || isset($_GET['id_empresa'])){
 	if(isset($_GET['id_curso'])){
 		$id_curso = $_GET['id_curso'];
 	}else{
@@ -28,18 +28,27 @@ if(isset($_GET['id_curso']) || isset($_POST['id_curso']) && isset($_POST['id_emp
 }else{
 	$id_curso = 0;
 	$id_empresa = 0;
+}*/
+
+if(isset($_SESSION['id_curso'])){
+	$id_curso = $_SESSION['id_curso'];
 }
+if(isset($_SESSION['id_empresa'])){
+	$id_empresa = $_SESSION['id_empresa'];
+}	
 
 if(isset($_SESSION['error'])){
 	$error = $_SESSION['error'];
 }
 
-if(isset($_POST['id_empresa']) AND isset($_POST['id_curso']) AND isset($_POST['titulo']) AND isset($_POST['precio'])){
+if(isset($_POST['id_empresa']) AND isset($_POST['id_curso']) AND isset($_POST['titulo']) AND isset($_POST['precio']) AND isset($_POST['comprar'])){
 	//Hacer que se logee el usuario antes de comprar//
 	$_SESSION['id_curso'] = $id_curso = $_POST['id_curso'];
     $_SESSION['id_empresa'] = $id_empresa = $_POST['id_empresa'];
 	$_SESSION['precio'] = $precio = $_POST['precio'];
 	$_SESSION['titulo'] = $titulo = $_POST['titulo'];
+	$_SESSION['comprar'] = $_POST['comprar'];
+	$_SESSION['moneda'] = $_POST['moneda'];
 	header('Location: login.php');
 	/*header('Location: ../MercadoPago/index.php?id_curso='.$id_curso.'&id_empresa='.$id_empresa.'&precio='.$precio.'&titulo='.$titulo);*/
 }

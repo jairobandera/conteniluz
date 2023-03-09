@@ -1,7 +1,12 @@
 <?php
-include '../../../config.php';//BD
 session_start();
+include '../../../config.php';//BD
 $conectado = conectar();
+
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../../login.php";</script>';
+}
+
 
 //$_SESSION['id_empresa'] = $id_empresa = $_GET['id_empresa'];
 //$_SESSION['id_curso'] = $id_curso = $_GET['id_curso'];
@@ -51,12 +56,12 @@ include 'Template/head.php';
 			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				<li>
-					<a href="javascript:;" class="has-arrow">
+					<a href="javascript:;" class="has-arrow" aria-expanded="true">
 						<div class="parent-icon"><img src="../../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
 						<div class="menu-title">Panel administrador</div>
 					</a>
-					<ul>
+					<ul class="mm-collapse mm-show">
 					<li> <a href="agregarEmpresas.php"><img src="../../../assetsNuevo/iconos/mas2.gif" width="40px" height="">Agregar Empresas</a>
 						</li>
 						<li> <a href="../pagos.php"><img src="../../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
@@ -78,14 +83,26 @@ include 'Template/head.php';
 				<nav class="navbar navbar-expand">
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
-					<div class="user-box dropdown">
-						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
-							<div class="user-info ps-3">
-                                <p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
+								<p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
-							</div>
-						</a>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</nav>
 			</div>
@@ -151,6 +168,15 @@ include 'Template/head.php';
 													<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="N" checked="checked"> No</h6>
 												</div>
 											</div>
+											<?php }else{ ?>
+												<div class="row mb-3">
+													<div class="col-sm-3">
+														<h6 class="mb-0"><img src="../../../assetsNuevo/iconos/sino2.gif" width="40px" height=""> Video de presentacion</h6>
+													</div>
+													<div class="col-sm-3">
+														<h6 class="mb-0"><input onclick="" type="radio" name="presentacion" id="presentacion" value="N" checked="checked"> No</h6>
+													</div>
+												</div>
 											<?php } ?>
 
 											<div class="row mb-3">

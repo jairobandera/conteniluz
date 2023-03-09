@@ -1,5 +1,9 @@
 <?php
 session_start();
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../../login.php";</script>';
+}
+
 $id_usuario = $_SESSION['id_usuario'];	
 
 include 'Template/head.php';
@@ -35,12 +39,12 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				<li>
-					<a href="javascript:;" class="has-arrow">
+					<a href="javascript:;" class="has-arrow" aria-expanded="true">
 						<div class="parent-icon"><img src="../../../assetsNuevo/iconos/home2.gif" width="30px" height="">
 						</div>
 						<div class="menu-title">Panel administrador</div>
 					</a>
-					<ul>
+					<ul class="mm-collapse mm-show">
                         <li> <a href="../admin.php"><img src="../../../assetsNuevo/iconos/empresas2.gif" width="40px" height="">Ver Empresas</a>
 						</li>
 						<li> <a href="../pagos.php"><img src="../../../assetsNuevo/iconos/pagos2.gif" width="40px" height="">Pagos</a>
@@ -60,14 +64,26 @@ $cursos = $result->fetch_all(MYSQLI_ASSOC);
 				<nav class="navbar navbar-expand">
 					<div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
 					</div>
-					<div class="user-box dropdown">
-						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
-							<div class="user-info ps-3">
+					<div class="top-menu ms-auto">
+						<ul class="navbar-nav align-items-center">
+						<img src="../../../assetsNuevo/iconos/usuario2.gif" width="40px" height="">
+							<li class="nav-item dropdown dropdown-large">
 								<p class="user-name mb-0"><?php echo $_SESSION['nombre_admin']; ?></p>
 								<p class="designattion mb-0"><?php echo $_SESSION['apellido_admin']; ?></p>
-							</div>
-						</a>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-notifications-list">
+									</div>
+								</div>
+							</li>
+							<li class="nav-item dropdown dropdown-large">
+								<div class="dropdown-menu dropdown-menu-end">
+									<div class="header-message-list">
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</nav>
 			</div>

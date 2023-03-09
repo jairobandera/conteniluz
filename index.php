@@ -1,364 +1,1066 @@
 <?php
 session_start();
-unset($_SESSION['id_empresa']);
 include 'config.php';
 $conectado = conectar();
-$resultado = $conectado->query("SELECT * FROM empresa");
-$empresas = $resultado->fetch_all(MYSQLI_ASSOC);
-//$cantidad = mysqli_num_rows($cursos);
-//echo $cantidad;
-/*if(!isset($_COOKIE["pais"])){
-    $geo = geoLocalizacion();
-    setcookie("pais", $geo, time() + ( 365 * 24 * 60 * 60)); //1 año
-}*/
+$index = 0;
 
-//Compraboar si existe pais en localstorage
-$pais =  "<script>
-    if(localStorage.getItem('pais')){
-      console.log(localStorage.getItem('pais'));
-    }
-</script>";
+if(isset($_SESSION['tipo'])){
+    if($_SESSION['tipo'] == 'USUARIO'){
+			//header('Location: alumno/index.php?id_empresa='.$id_empresa);
+            echo '<script>window.location.href = "Template/alumno/index.php";</script>';
+	}
+}
 
-/*if(!isset($_COOKIE["pais"])){
-    //llamo a la funcion setCookiePais de js y la guardo en $pais
-   echo "<script>setCookiePais();</script>";    
-   
-}else{
-    echo "<script>setCookiePais();</script>";
-}*/
+if(isset($_SESSION['id_empresa']) AND isset($_SESSION['id_curso'])){
+    unset($_SESSION['id_empresa']);
+    unset($_SESSION['id_curso']);
+}
+
+//Vengo desde un alumno que quiere comprar un curso
+if(isset($_SESSION['habilitarCrearCuenta']) AND isset($_SESSION['eliminarBotonoes'])){
+    $habilitarCuenta = $_SESSION['habilitarCrearCuenta'];
+    $eliminarBotones = $_SESSION['eliminarBotonoes'];
+    echo $eliminarBotones;
+}
+
+//traigo todos los profesores
+/*$resultado = $conectado->query("SELECT ROW_NUMBER() OVER(ORDER BY id ASC) AS numero, p.*, c.descripcion, c.miniatura, c.id_empresa AS idEmpresa FROM profesor AS p, cursos AS c WHERE p.id = c.id_profesor ORDER BY id ASC");
+$profesores = $resultado->fetch_all(MYSQLI_ASSOC);*/
+$resultado = $conectado->query("SELECT ROW_NUMBER() OVER(ORDER BY id ASC) AS numero, e.*, p.id AS idProfesor, p.nombre FROM empresa AS e, profesor AS p where e.id_usuario = p.id_usuario");
+$profesores = $resultado->fetch_all(MYSQLI_ASSOC);
+
+
+
+//recorro los profesores
+foreach ($profesores as $profesor){
+    //$id_profesor = $profesor['id'];
+   //echo $profesor['miniatura']; 
+    //Traigo todos los cursos de los profesores
+    //$resultado = $conectado->query("SELECT e.id,e.id_usuario,e.nombre_empresa,e.miniatura AS imgEmpresa,p.nombre, p.apellido, c.miniatura AS imgCurso, c.titulo_curso FROM empresa AS e, profesor AS p, cursos AS c WHERE e.id_usuario = p.id_usuario AND c.id_empresa = e.id AND c.id_profesor = p.id");
+    //$resultados = $conectado->query("SELECT e.id, e.nombre_empresa,e.miniatura AS imgEmpresa, c.miniatura AS imgCurso, c.titulo_curso, c.descripcion FROM empresa AS e, cursos AS c, profesor AS p WHERE p.id = $id_profesor GROUP BY (e.id)");
+    /*$resultados = $conectado->query("SELECT e.id, e.nombre_empresa,e.miniatura AS imgEmpresa, 
+    c.miniatura AS imgCurso, c.titulo_curso, c.descripcion, p.id AS idProfesor
+    FROM empresa AS e, cursos AS c, profesor AS p 
+    WHERE p.id = c.id_profesor AND p.id_usuario = e.id_usuario
+    GROUP BY (e.id)
+    ORDER BY idProfesor ASC");
+
+    $cursos = $resultados->fetch_all(MYSQLI_ASSOC);
+    $id_empresa = $cursos[$index]['id'];*/
+}
+
+if(isset($_COOKIE["pais"])){
+  $pais = $_COOKIE["pais"];
+}
+
 
 ?>
-  
+
 <!DOCTYPE html>
 <html lang="en">
- 	<head>
-		<title>Haswell - Responsive HTML5 Template</title>
-		<meta charset="utf-8">
-		<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
-		<meta name="robots" content="index, follow" > 
-		<meta name="keywords" content="HTML5 Template" > 
-		<meta name="description" content="Haswell - Responsive HTML5 Template" > 
-		<meta name="author" content="ABCgomel">
 
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		
-		<!-- FAVICONS -->
-    <link rel="shortcut icon" href="assetsNuevo/images/favicon/favicon.png">
-    <link rel="apple-touch-icon" href="assetsNuevo/images/favicon/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="assetsNuevo/images/favicon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="assetsNuevo/images/favicon/apple-touch-icon-114x114.png">
-		
-<!-- CSS -->
-    <!-- REVOSLIDER CSS SETTINGS -->
-    <link rel="stylesheet" type="text/css" href="assetsNuevo/rs-plugin/css/settings.min.css" media="screen">
+<head>
+    <meta charset="utf-8">
+    <title>
+        InstituZion
+    </title>
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <meta content="" name="keywords">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link rel="icon" href="assets/assets/images/icono.png" type="image/png" />
+    <!-- Ultimex v1.2 || ex nihilo || September - October 2020 -->
+    <!-- style start -->
+    <link href="assetsFinal/css/plugins.css" media="all" rel="stylesheet" type="text/css">
+    <link href="assetsFinal/css/style-dark.css" media="all" rel="stylesheet" type="text/css"><!-- style end -->
+    <!-- google fonts start -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900%7COswald:300,400,700"
+        rel="stylesheet" type="text/css"><!-- google fonts end -->
+    <!-- estilos personales -->
+    <link href="assetsFinal/css/style.css" media="all" rel="stylesheet" type="text/css">
+</head>
 
-    <!--  BOOTSTRAP -->
-		<link rel="stylesheet" href="assetsNuevo/css/bootstrap.min.css"> 
-	
-    <!--  GOOGLE FONT -->		
-		<link href='https://fonts.googleapis.com/css?family=Lato:300,400,700%7COpen+Sans:400,300,700' rel='stylesheet' type='text/css'>
-  
-    <!-- ICONS ELEGANT FONT & FONT AWESOME & LINEA ICONS  -->		
-		<link rel="stylesheet" href="assetsNuevo/css/icons-fonts.css" >	
-	
-    <!--  CSS THEME -->		
-		<link rel="stylesheet" href="assetsNuevo/css/style.css" >
-
-    <!-- ANIMATE -->	
-		<link rel='stylesheet' href="assetsNuevo/css/animate.min.css">	
-	
-<!-- CSS end -->
-		
-	</head>
-	<body>
-	
-		<!-- LOADER -->	
-		<div id="loader-overflow">
-      <div id="loader3">Please enable JS</div>
-    </div>	
-
-		<div id="wrap" class="boxed ">
-			<div class="grey-bg"> <!-- Grey BG  -->				
-				<!-- HEADER 1 BLACK MOBILE-NO-TRANSPARENT -->
-				<header id="nav" class="header header-1 black-header mobile-no-transparent">
-          
-				  <div class="header-wrapper">
-					<div class="container-m-30 clearfix">
-					  <div class="logo-row">
-					  
-						<!-- LOGO --> 
-						<div class="logo-container-2">
-                <div class="logo-2">
-                  <a href="index.php" class="clearfix">
-                    <img src="assetsNuevo/logo.gif" class="logo-img" width="" alt="Logo">
-                  </a>
+<body>
+    <!-- preloader start 
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader">
+                <span></span>
+            </div>
+        </div>
+    </div>preloader end -->
+    <!-- navigation wrapper start -->
+    <div class="navbar-wrapper"></div><!-- navigation wrapper end -->
+    <!-- navigation start -->
+    <nav class="navbar navbar-fixed-top">
+        <!-- container start -->
+        <div class="container-fluid">
+            <!-- navigation header start -->
+            <div class="navbar-header">
+                <!-- logo start -->
+                <div class="logo">
+                    <a class="navbar-brand logo" href="#"><img alt="Logo" src="assetsFinal/img/logo.png"
+                            width="250px"></a>
+                </div><!-- logo end -->
+            </div><!-- navigation header end -->
+            <!-- main navigation start -->
+            <div class="main-navigation">
+                <div class="navbar-header">
+                    <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar-collapse"
+                        data-toggle="collapse" type="button"><span class="sr-only">Toggle
+                            navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                            class="icon-bar"></span></button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <!-- menu start -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a class="link-underline-menu active" href="#home">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="link-underline-menu" href="#about">Nosotros</a>
+                        </li>
+                        <li>
+                            <a class="link-underline-menu" href="#news">Ver cursos</a>
+                        </li>
+                        <li>
+                            <a class="link-underline-menu" href="#contact">Contacto</a>
+                        </li>
+                        <li>
+                            <a style="color:#ff264a;" class="" href="#login">Salon de clases</a>
+                        </li>
+                    </ul><!-- menu end -->
+                </div>
+            </div><!-- main navigation end -->
+        </div><!-- container end -->
+    </nav><!-- navigation end -->
+    <!-- main container start -->
+    <div id="containerOT">
+        <!-- social icons start -->
+        <div class="social-icons">
+            <ul>
+                <li>
+                    <a class="ion-social-whatsapp" href="https://wa.me/5493512153306?text=Hola%20Instituzion%20"
+                        target="_blank"><span>Whatsapp</span></a>
+                </li>
+                <li>
+                    <a class="ion-social-facebook" href="https://www.facebook.com/conteniluz"
+                        target="_blank"><span>Facebook</span></a>
+                </li>
+                <li>
+                    <a class="ion-social-instagram" href="https://www.instagram.com/instituzion"
+                        target="_blank"><span>Instagram</span></a>
+                </li>
+            </ul>
+        </div><!-- social icons end -->
+        <!-- bottom credits start -->
+        <div class="bottom-credits">
+            <!-- page subtitle start -->
+            <h4 class="bottom-credits-lead bottom-credits-first">
+                (+549) 3512153306
+            </h4><!-- page subtitle end -->
+            <!-- page subtitle start -->
+            <h4 class="bottom-credits-lead bottom-credits-lead-color">
+                <a href="mailto:ultimex@ultimex.com">pablobandera.123@gmail.com</a>
+            </h4><!-- page subtitle end -->
+        </div><!-- bottom credits end -->
+        <!-- vertical lines start -->
+        <div class="vertical-lines-wrapper">
+            <div class="vertical-lines"></div>
+        </div><!-- vertical lines end -->
+        <!-- overlay start -->
+        <div id="overlay"></div><!-- overlay end -->
+        <!-- hero bg start -->
+        <div class="hero-fullscreen">
+            <div class="hero-fullscreen-FIX">
+                <div class="hero-bg">
+                    <!-- hero slider wrapper start -->
+                    <div class="hero-slider-wrapper">
+                        <div class="hero-slider hero-slider-wrapper">
+                            <!-- dot pattern start -->
+                            <div class="dot-pattern-wrapper-home">
+                                <div class="dot-pattern-home"></div>
+                            </div><!-- dot pattern end -->
+                            <!-- swiper container start -->
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    <!-- swiper slide start -->
+                                    <div class="swiper-slide">
+                                        <div class="swiper-slide-txt">
+                                            <div class="swiper-slide-txt-inner">
+                                                <!-- page subtitle start -->
+                                                <h4 class="post-heading post-heading-all post-heading-slide">
+                                                    La empresa
+                                                </h4><!-- page subtitle end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-half"></div><!-- divider end -->
+                                                <!-- page title start -->
+                                                <div class="post-title">
+                                                    Somos<br>
+                                                    <span class="post-title-color">Instituzion</span>
+                                                </div><!-- page title end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider"></div><!-- divider end -->
+                                                <!-- page TXT start -->
+                                                <p>
+                                                    Una plataforma dedicada a la edificacion de personas con un
+                                                    proposito, <a class="link-underline" href="#">edificar</a>.
+                                                </p><!-- page TXT end -->
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div><!-- swiper slide end -->
+                                    <!-- swiper slide start -->
+                                    <div class="swiper-slide">
+                                        <div class="swiper-slide-txt">
+                                            <div class="swiper-slide-txt-inner">
+                                                <!-- page subtitle start -->
+                                                <h4 class="post-heading post-heading-all post-heading-slide">
+                                                    Miralo en
+                                                </h4><!-- page subtitle end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-half"></div><!-- divider end -->
+                                                <!-- page title start -->
+                                                <div class="post-title">
+                                                    Todos los<br>
+                                                    <span class="post-title-color">Dispositivos</span>
+                                                </div><!-- page title end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider"></div><!-- divider end -->
+                                                <!-- page TXT start -->
+                                                <p>
+                                                    No tenes excusas, podes ver el material de estudio en el dispositvo
+                                                    que tengas <a class="link-underline" href="#">a tu alcance</a>.
+                                                </p><!-- page TXT end -->
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div><!-- swiper slide end -->
+                                    <!-- swiper slide start -->
+                                    <div class="swiper-slide">
+                                        <div class="swiper-slide-txt">
+                                            <div class="swiper-slide-txt-inner">
+                                                <!-- page subtitle start -->
+                                                <h4 class="post-heading post-heading-all post-heading-slide">
+                                                    Desarrollos
+                                                </h4><!-- page subtitle end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-half"></div><!-- divider end -->
+                                                <!-- page title start -->
+                                                <div class="post-title">
+                                                    En breve mas<br>
+                                                    <span class="post-title-color">Novedades</span>
+                                                </div><!-- page title end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider"></div><!-- divider end -->
+                                                <!-- page TXT start -->
+                                                <p>
+                                                    Estamos trabajando para darte mas herramientas y aportar beneficios
+                                                    a la <a class="link-underline" href="#">comunidad</a>.
+                                                </p><!-- page TXT end -->
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div><!-- swiper slide end -->
+                                    <!-- swiper slide start -->
+                                    <div class="swiper-slide">
+                                        <div class="swiper-slide-txt">
+                                            <div class="swiper-slide-txt-inner">
+                                                <!-- page subtitle start -->
+                                                <h4 class="post-heading post-heading-all post-heading-slide">
+                                                    Futuro
+                                                </h4><!-- page subtitle end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-half"></div><!-- divider end -->
+                                                <!-- page title start -->
+                                                <div class="post-title">
+                                                    Mira el<br>
+                                                    <span class="post-title-color">Contenido</span>
+                                                </div><!-- page title end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider"></div><!-- divider end -->
+                                                <!-- page TXT start -->
+                                                <p>
+                                                    Tenes todo el material al alcanze de un <a class="link-underline"
+                                                        href="#">click</a>.
+                                                </p><!-- page TXT end -->
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div><!-- swiper slide end -->
+                                </div>
+                            </div><!-- swiper container end -->
+                        </div>
+                    </div><!-- hero slider wrapper end -->
+                    <!-- hero slider wrapper IMG start -->
+                    <div class="hero-slider-wrapper-img hero-slider-img">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                <!-- swiper slide start -->
+                                <div class="swiper-slide">
+                                    <div class="hero-slider-bg bg-img bg-img-1 overlay overlay-dark"
+                                        data-swiper-parallax="20%"></div>
+                                    <div class="overlay-cover cover-all"></div>
+                                </div><!-- swiper slide end -->
+                                <!-- swiper slide start -->
+                                <div class="swiper-slide">
+                                    <div class="hero-slider-bg bg-img bg-img-2 overlay overlay-dark"
+                                        data-swiper-parallax="20%"></div>
+                                    <div class="overlay-cover cover-all"></div>
+                                </div><!-- swiper slide end -->
+                                <!-- swiper slide start -->
+                                <div class="swiper-slide">
+                                    <div class="hero-slider-bg bg-img bg-img-3 overlay overlay-dark"
+                                        data-swiper-parallax="20%"></div>
+                                    <div class="overlay-cover cover-all"></div>
+                                </div><!-- swiper slide end -->
+                                <!-- swiper slide start -->
+                                <div class="swiper-slide">
+                                    <div class="hero-slider-bg bg-img bg-img-4 overlay overlay-dark"
+                                        data-swiper-parallax="20%"></div>
+                                    <div class="overlay-cover cover-all"></div>
+                                </div><!-- swiper slide end -->
+                            </div>
+                        </div>
+                    </div><!-- hero slider wrapper IMG end -->
+                    <!-- swiper slider controls start -->
+                    <div class="hero-slider-bg-controls">
+                        <div class="swiper-slide-controls slide-prev">
+                            <div class="ion-ios-arrow-left" style="margin: 1em auto;"></div>
+                        </div>
+                        <div class="swiper-slide-controls slide-next">
+                            <div class="ion-ios-arrow-right" style="margin: 1em auto;"></div>
+                        </div>
+                    </div><!-- swiper slider controls end -->
+                    <!-- swiper slider play-pause start -->
+                    <div
+                        class="swiper-slide-controls-play-pause-wrapper swiper-slide-controls-play-pause slider-on-off">
+                        <div class="slider-on-off-switch" style="margin: 1em auto;">
+                            <i class="ion-ios-play"></i>
+                        </div>
+                    </div><!-- swiper slider play-pause end -->
+                    <!-- swiper slider pagination start -->
+                    <div class="swiper-slide-pagination"></div><!-- swiper slider pagination end -->
                 </div>
             </div>
-						<!-- BUTTON --> 
-						<div class="menu-btn-respons-container">
-							<button type="button" class="navbar-toggle btn-navbar collapsed" data-toggle="collapse" data-target="#main-menu .navbar-collapse">
-								<span aria-hidden="true" class="icon_menu hamb-mob-icon"></span>
-							</button>
-						</div>
-					 </div>
-					</div>
+        </div><!-- hero bg end -->
+        <!-- about section start -->
+        <div id="about-lifting">
+            <!-- container start -->
+            <div class="container-fluid" id="about">
+                <!-- lifting inner start -->
+                <div class="all-lifting-inner">
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                    <!-- row start -->
+                    <div class="row">
+                        <!-- col start -->
+                        <div class="col-md-3 post-block">
+                            <!-- page title start -->
+                            <div class="page-title-content page-title-all">
+                                <h1 class="post-title post-title-all-main-title" style="margin-top:15px;">
+                                    Conocenos
+                                </h1>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="owl-nav owl-nav-custom-about"></div><!-- owl nav end -->
+                        </div><!-- col end -->
+                        <!-- col start -->
+                        <div class="col-md-9 the-first-lift">
+                            <!-- post carousel start -->
+                            <div class="owl-carousel" id="about-carousel">
+                                <!-- post block start -->
+                                <div class="post-block-second">
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 1 start -->
+                                        <div class="post-inner">
+                                            <div class="post-content post-content-correction-about">
+                                                <!-- post txt start -->
+                                                <div class="post-txt">
+                                                    <!-- page subtitle start -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <!-- page title start -->
+                                                    <div class="post-title" style="margin-top:10px;">
+                                                        El <span class="post-title-color">Sueño</span>
+                                                    </div><!-- page title end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <div class="section-intro">
+                                                        <p>
+                                                            <span>Pablo Bandera</span> Me gustaría que esta plataforma
+                                                            sea el puente de que todos aquellos que tienen algo de Dios
+                                                            para comunicar y no tienen los recursos para hacerlo.
+                                                        </p>
+                                                    </div><!-- page TXT end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <p>
+                                                        Como Iglesia tenemos una tremenda herramienta para impactar, SER
+                                                        UNO.
+                                                        Algunos “de afuera” entendieron que uniendo todo en un solo
+                                                        lugar es más fácil llegar que haciendo fuerza de manera
+                                                        independiente.
+                                                        ¿Cómo nosotros, conociendo la verdad no vamos a lograr
+                                                        <a class="link-underline" href="#">cosas mayores?</a>.
+                                                    </p><!-- page TXT end -->
+                                                </div><!-- post txt end -->
+                                            </div>
+                                        </div><!-- post item 1 end -->
+                                    </div><!-- col end -->
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 2 start -->
+                                        <div class="post-inner">
+                                            <div class="post-content">
+                                                <!-- page subtitle start -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-half"></div><!-- divider end -->
+                                                <!-- page title start -->
+                                                <div class="post-title">
+                                                    El <span class="post-title-color">Equipo</span>
+                                                </div><!-- page title end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider-large"></div><!-- divider end -->
+                                                <!-- facts counter start -->
+                                                <!-- page TXT start -->
+                                                <div class="section-intro">
+                                                    <p>
+                                                        <span>Tenemos muchas</span> ideas que poco a poco vamos a ir
+                                                        desarrollando para depositar aquí.
+                                                    </p>
+                                                </div><!-- page TXT end -->
+                                                <!-- divider start -->
+                                                <div class="inner-divider"></div><!-- divider end -->
+                                                <!-- page TXT start -->
+                                                <p>
+                                                    Nuestra intención es innovar e implementar tantos recursos como
+                                                    herramientas nos sean posibles, para que en un futuro cercano las
+                                                    congregaciones tengan tecnología a su alcance para todas sus
+                                                    <a class="link-underline" href="#">actividades.</a>.
+                                                </p><!-- page TXT end -->
+                                            </div>
+                                        </div><!-- post item 2 end -->
+                                    </div><!-- col end -->
+                                </div><!-- post block end -->
+                                <!-- post block start -->
+                                <div class="post-block-second">
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 3 start -->
+                                        <div class="post-inner">
+                                            <div class="post-content post-content-correction-about">
+                                                <!-- post txt start -->
+                                                <div class="post-txt">
+                                                    <!-- page subtitle start -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <!-- page title start -->
+                                                    <div class="post-title">
+                                                        Servicios<span class="post-title-color"></span>
+                                                    </div><!-- page title end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <div class="section-intro">
+                                                        <p>
+                                                            <span>¿Tienes una idea</span> o un proyecto y nos sabes cómo
+                                                            producirlo?
+                                                        </p>
+                                                    </div><!-- page TXT end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <p>
+                                                        Desde el equipo de INSTITUZION queremos contarte que podemos
+                                                        producir todo tu proyecto. Tenemos todas las herramientas para
+                                                        filmar, editar y desde aquí COMUNICAR lo que Dios depositó en
+                                                        vos.
+                                                        <a class="link-underline" href="#">Contáctanos!</a>.
+                                                    </p><!-- page TXT end -->
+                                                </div><!-- post txt end -->
+                                            </div>
+                                        </div><!-- post item 3 end -->
+                                    </div><!-- col end -->
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                </div><!-- post block end -->
+                                <!-- post block start -->
+                            </div><!-- post carousel end -->
+                        </div><!-- col end -->
+                    </div><!-- row end -->
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                </div><!-- lifting inner end -->
+            </div><!-- container end -->
+        </div><!-- about section end -->
+        <!-- news section start Profesores -->
+        <div id="news-lifting">
+            <!-- container start -->
+            <div class="container-fluid" id="news">
+                <!-- lifting inner start -->
+                <div class="all-lifting-inner">
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                    <!-- row start -->
+                    <div class="row">
+                        <!-- col start -->
+                        <div class="col-md-3 post-block">
+                            <!-- page title start -->
+                            <div class="page-title-content page-title-all">
+                                <div class="post-title" style="font-size:7rem; margin:15px 0 0 15px;">
+                                    Ver <br><span class="post-title-color">cursos</span>
+                                </div><!-- page title end -->
+                            </div><!-- page title end -->
+                            <!-- owl nav start -->
+                            <div class="owl-nav owl-nav-custom-news"></div><!-- owl nav end -->
+                            <!-- page subtitle start -->
+                            <!--<h2 class="section-heading" style="margin-top:40px;">
+                                <span>04.</span> Stay Up-to-Date
+                            </h2>< page subtitle end -->
+                        </div><!-- col end -->
+                        <!-- col start -->
+                        <div class="col-md-9 the-first-lift">
+                            <!-- post carousel start -->
+                            <div class="owl-carousel" id="news-carousel">
+                                <!-- post block start -->
+                                <?php foreach($profesores as $profesor){ ?>
+                                <div class="post-block-second">
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 1 start -->
+                                        <div class="post-inner" style="">
+                                            <div class="post-content">
+                                                <!-- post txt start -->
+                                                <div class="post-txt">
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page title start -->
+                                                    <div class="post-title post-title-news" style="margin-top:3em;">
+                                                        <?php 
+                                                        $cadena = $profesor['nombre_empresa'];
+                                                        //Si cadena tiene un espacio en blanco
+                                                        if (strpos($cadena, ' ') !== false) {
+                                                            //Separa la cadena en dos partes
+                                                            list($palabra1, $palabra2) = explode(' ', $cadena);
+                                                        }else{
+                                                            $palabra1 = $cadena;
+                                                            $palabra2 = "";
+                                                        }
 
-					<!-- MAIN MENU CONTAINER -->
-					<div class="main-menu-container" style="background:white;">
-						
-						  <div class="container-m-30 clearfix">	
-						  
-								<!-- MAIN MENU -->
-								<div id="main-menu">
-								  <div class="navbar navbar-default" role="navigation">
+                                                        //list($palabra1, $palabra2) = explode(' ', $cadena);
+                                                        
+                                                        ?>
+                                                        <?php echo $palabra1; ?> <span
+                                                            class="post-title-color"><?php echo $palabra2; ?></span>
+                                                    </div><!-- page title end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <!-- page subtitle start -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <div class="section-intro">
+                                                        <p>
+                                                            <?php echo $profesor['descripcion']; ?>
+                                                        </p>
+                                                    </div><!-- page TXT end -->
+                                                </div><!-- post txt end -->
+                                                <!-- button start -->
+                                                <div class="button-the-wrapper">
+                                                    <a style="font-size:20px;" class="button-the" data-toggle="modal"
+                                                        href="comprarCursos.php?idP=<?php echo $profesor['idProfesor']; ?>&idE=<?php echo $profesor['id']; ?>">Comprar
+                                                        cursos </a>
+                                                </div><!-- button end -->
+                                            </div>
+                                        </div><!-- post item 1 end -->
+                                    </div><!-- col end -->
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- news item 1 start -->
+                                        <div class="works-item works-item-effect">
+                                            <div class="works-item-size">
+                                                <!-- post item IMG start -->
+                                                <div class="post-box">
+                                                    <div class="post-box-photo-news post-box-photo-news-<?php echo $profesor['numero']; ?> works-img-all"
+                                                        style="background-image: url(uploads/empresas/<?php echo $profesor['miniatura']; ?>)">
+                                                    </div>
+                                                    <div class="works-img-all works-item-bg"></div>
+                                                    <div class="works-description popup-photo-gallery">
+                                                        <!-- post item link start -->
+                                                        <div>
+                                                            <div class="works-item-size-FIX">
+                                                                <!-- section title start -->
+                                                                <h3>
+                                                                    Profesor:
+                                                                </h3><!-- section title end -->
+                                                                <!-- divider start -->
+                                                                <div class="inner-divider-ultra-half"></div>
+                                                                <!-- divider end -->
+                                                                <!-- section subtitle start -->
+                                                                <div class="works-description-second">
+                                                                    <?php echo $profesor['nombre']; ?>
+                                                                </div><!-- section subtitle end -->
+                                                            </div><!-- post item end -->
+                                                        </div><!-- post item link end -->
+                                                        <!-- post item list start -->
+                                                        <!--<a href="uploads/empresas/<?php //echo $cursos[$index]['imgEmpresa']; ?>"
+                                                            title="Cursos / <?php //echo $cursos[$index]['titulo_curso']; ?>"></a>
+                                                        <?php //$index++; ?>-->
+                                                        <!--<a href="assetsFinal/img/works/works-gallery/gallery-2/gallery-1-2.jpg" title="Gallery 2 / Image description 2"></a> <a href=
+                                                            "assetsFinal/img/works/works-gallery/gallery-2/gallery-1-3.jpg" title="Gallery 2 / Image description 3"></a> <a href=
+                                                            "assetsFinal/img/works/works-gallery/gallery-2/gallery-1-4.jpg" title="Gallery 2 / Image description 4"></a>-->
+                                                        <!-- post item list end -->
+                                                        <!-- divider start -->
+                                                        <div class="inner-divider-ultra-half"></div><!-- divider end -->
+                                                    </div><!-- post item description end -->
+                                                </div><!-- post item IMG end -->
+                                            </div>
+                                        </div><!-- news item 1 end -->
+                                    </div><!-- col end -->
+                                </div><!-- post block end -->
+                                <?php } ?>
+                            </div><!-- post carousel end -->
+                        </div><!-- col end -->
+                    </div><!-- row end -->
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                </div><!-- lifting inner end -->
+            </div><!-- container end -->
+        </div><!-- news section end -->
+        <!-- contact section start -->
+        <div id="contact-lifting">
+            <!-- container start -->
+            <div class="container-fluid" id="contact">
+                <!-- lifting inner start -->
+                <div class="all-lifting-inner">
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                    <!-- row start -->
+                    <div class="row">
+                        <!-- col start -->
+                        <div class="col-md-3 post-block">
+                            <!-- page title start -->
+                            <div class="page-title-content page-title-all">
+                                <h1 class="post-title post-title-all-main-title">
+                                    Contacto
+                                </h1>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- owl nav start -->
+                            <div class="owl-nav owl-nav-custom-contact"></div><!-- owl nav end -->
+                        </div><!-- col end -->
+                        <!-- col start -->
+                        <div class="col-md-9 the-first-lift">
+                            <!-- post carousel start -->
+                            <div class="owl-carousel" id="contact-carousel">
+                                <!-- post block start -->
+                                <div class="post-block-second">
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 1 start -->
+                                        <div class="post-inner">
+                                            <div class="post-content post-content-correction-about">
+                                                <!-- post txt start -->
+                                                <div class="post-txt">
+                                                    <!-- page subtitle start -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-half"></div><!-- divider end -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page title start -->
+                                                    <div class="post-title">
+                                                        Escribenos
+                                                    </div><!-- page title end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider-large"></div><!-- divider end -->
+                                                    <!-- page TXT start -->
+                                                    <div class="section-intro">
+                                                        <p>
+                                                            <span>¿Tienes una idea</span> o un proyecto en mente?
+                                                            No dudes en escribirnos.
+                                                        </p>
+                                                    </div><!-- page TXT end -->
+                                                    <!-- divider start -->
+                                                    <div class="inner-divider"></div><!-- divider end -->
+                                                </div><!-- post txt end -->
+                                            </div>
+                                        </div><!-- post item 1 end -->
+                                    </div><!-- col end -->
+                                    <!-- mobile divider start -->
+                                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                                    <!-- col start -->
+                                    <div class="col-md-6 col-lg-6 post-block-correction">
+                                        <!-- post item 2 start -->
+                                        <div class="post-inner">
+                                            <div class="post-content">
+                                                <!-- page TXT start -->
+                                                <!-- contact form start -->
+                                                <div id="contact-form">
+                                                    <form action="contact.php" id="form" method="post" name="send">
+                                                        <!-- col start -->
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input class="requiredField name" id="name" name="name"
+                                                                placeholder="Nombre" type="text">
+                                                        </div><!-- col end -->
+                                                        <!-- col start -->
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input class="requiredField email" id="email" name="email"
+                                                                placeholder="Correo" type="text">
+                                                        </div><!-- col end -->
+                                                        <!-- col start -->
+                                                        <div class="make-space">
+                                                            <input class="requiredField subject" id="subject"
+                                                                name="Asunto" placeholder="Subject" type="text">
+                                                        </div><!-- col end -->
+                                                        <!-- col start -->
+                                                        <div class="make-space">
+                                                            <textarea class="requiredField message" id="message"
+                                                                name="Mensaje" placeholder="Message"></textarea>
+                                                        </div><!-- col end -->
+                                                        <div>
+                                                            <!-- button start -->
+                                                            <div class="button-the-wrapper">
+                                                                <button class="button-the button-the-submit" id="submit"
+                                                                    type="submit"><span>Enviar</span></button>
+                                                            </div><!-- button end -->
+                                                        </div>
+                                                    </form>
+                                                </div><!-- contact form end -->
+                                                <!-- page TXT end -->
+                                            </div>
+                                        </div><!-- post item 2 end -->
+                                    </div><!-- col end -->
+                                </div><!-- post block end -->
+                            </div><!-- post carousel end -->
+                        </div><!-- col end -->
+                    </div><!-- row end -->
+                    <!-- mobile divider start -->
+                    <div class="inner-divider-mobile"></div><!-- mobile divider end -->
+                </div><!-- lifting inner end -->
+            </div><!-- container end -->
+        </div><!-- contact section end -->
+    </div><!-- main container end -->
+    <!-- news modal 1 start -->
+    <div aria-hidden="true" class="news-modal modal fade" id="newsModal-1" role="dialog" tabindex="-1">
+        <!-- news modal content 1 start -->
+        <div class="modal-content">
+            <!-- container start -->
+            <div class="container">
+                <!-- dot pattern start -->
+                <div class="dot-pattern-wrapper">
+                    <div class="dot-pattern"></div>
+                </div>
+                <div class="dot-pattern-wrapper-reverse">
+                    <div class="dot-pattern"></div>
+                </div><!-- dot pattern end -->
+                <!-- row start -->
+                <div class="row">
+                    <!-- col start -->
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <!-- news modal body 1 start -->
+                        <div class="modal-body">
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-lead">
+                                Beauty / Fashion
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page title start -->
+                            <div class="post-title post-title-news">
+                                Simplicity is <span class="post-title-color">complex</span>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-date">
+                                October 1, 2020
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-large"></div><!-- divider end -->
+                            <!-- news modal body 1 image start -->
+                            <img alt="News Modal" class="img-responsive" src="assetsFinal/img/news/news-1.jpg">
+                            <!-- news modal body 1 image end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <div class="section-intro">
+                                <p>
+                                    <span>Lorem Ipsum</span> is simply dummy text of the printing and typesetting
+                                    industry.
+                                </p>
+                            </div><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <p>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has been the industry's standard dummy text ever since the 1500s, when an
+                                unknown printer took a galley of type and scrambled it to make a type specimen book. It
+                                has survived not only five centuries, but also the leap into electronic
+                                typesetting, remaining <a class="link-underline" href="#">essentially unchanged</a>.
+                            </p><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- button start -->
+                            <div class="button-the-wrapper button-the-wrapper-modal">
+                                <a class="button-the" data-dismiss="modal" href="#">Close</a>
+                            </div><!-- button end -->
+                        </div><!-- news modal body 1 end -->
+                    </div><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- container end -->
+        </div><!-- news modal content 1 end -->
+    </div><!-- news modal 1 end -->
+    <!-- news modal 2 start -->
+    <div aria-hidden="true" class="news-modal modal fade" id="newsModal-2" role="dialog" tabindex="-1">
+        <!-- news modal content 2 start -->
+        <div class="modal-content">
+            <!-- container start -->
+            <div class="container">
+                <!-- dot pattern start -->
+                <div class="dot-pattern-wrapper">
+                    <div class="dot-pattern"></div>
+                </div>
+                <div class="dot-pattern-wrapper-reverse">
+                    <div class="dot-pattern"></div>
+                </div><!-- dot pattern end -->
+                <!-- row start -->
+                <div class="row">
+                    <!-- col start -->
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <!-- news modal body 2 start -->
+                        <div class="modal-body">
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-lead">
+                                People / Life
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page title start -->
+                            <div class="post-title post-title-news">
+                                Design is a <span class="post-title-color">process</span>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-date">
+                                October 2, 2020
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-large"></div><!-- divider end -->
+                            <!-- news modal body 2 video start -->
+                            <div class="news-modal-video-container">
+                                <iframe allowfullscreen height="315" src="" width="560"></iframe>
+                            </div><!-- news modal body 2 video end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <div class="section-intro">
+                                <p>
+                                    <span>Lorem Ipsum</span> is simply dummy text of the printing and typesetting
+                                    industry.
+                                </p>
+                            </div><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <p>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has been the industry's standard dummy text ever since the 1500s, when an
+                                unknown printer took a galley of type and scrambled it to make a type specimen book. It
+                                has survived not only five centuries, but also the leap into electronic
+                                typesetting, remaining <a class="link-underline" href="#">essentially unchanged</a>.
+                            </p><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- button start -->
+                            <div class="button-the-wrapper button-the-wrapper-modal">
+                                <a class="button-the" data-dismiss="modal" href="#">Close</a>
+                            </div><!-- button end -->
+                        </div><!-- news modal body 2 end -->
+                    </div><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- container end -->
+        </div><!-- news modal content 2 end -->
+    </div><!-- news modal 2 end -->
+    <!-- news modal 3 start -->
+    <div aria-hidden="true" class="news-modal modal fade" id="newsModal-3" role="dialog" tabindex="-1">
+        <!-- news modal content 3 start -->
+        <div class="modal-content">
+            <!-- container start -->
+            <div class="container">
+                <!-- dot pattern start -->
+                <div class="dot-pattern-wrapper">
+                    <div class="dot-pattern"></div>
+                </div>
+                <div class="dot-pattern-wrapper-reverse">
+                    <div class="dot-pattern"></div>
+                </div><!-- dot pattern end -->
+                <!-- row start -->
+                <div class="row">
+                    <!-- col start -->
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <!-- news modal body 3 start -->
+                        <div class="modal-body">
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-lead">
+                                Royalty / Stock
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page title start -->
+                            <div class="post-title post-title-news">
+                                Aesthetic is a <span class="post-title-color">decision</span>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-date">
+                                October 3, 2020
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-large"></div><!-- divider end -->
+                            <!-- news modal body 3 image start -->
+                            <img alt="News Modal" class="img-responsive" src="assetsFinal/img/news/news-2.jpg">
+                            <!-- news modal body 3 image end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <div class="section-intro">
+                                <p>
+                                    <span>Lorem Ipsum</span> is simply dummy text of the printing and typesetting
+                                    industry.
+                                </p>
+                            </div><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <p>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has been the industry's standard dummy text ever since the 1500s, when an
+                                unknown printer took a galley of type and scrambled it to make a type specimen book. It
+                                has survived not only five centuries, but also the leap into electronic
+                                typesetting, remaining <a class="link-underline" href="#">essentially unchanged</a>.
+                            </p><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- button start -->
+                            <div class="button-the-wrapper button-the-wrapper-modal">
+                                <a class="button-the" data-dismiss="modal" href="#">Close</a>
+                            </div><!-- button end -->
+                        </div><!-- news modal body 3 end -->
+                    </div><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- container end -->
+        </div><!-- news modal content 3 end -->
+    </div><!-- news modal 3 end -->
+    <!-- news modal 4 start -->
+    <div aria-hidden="true" class="news-modal modal fade" id="newsModal-4" role="dialog" tabindex="-1">
+        <!-- news modal content 4 start -->
+        <div class="modal-content">
+            <!-- container start -->
+            <div class="container">
+                <!-- dot pattern start -->
+                <div class="dot-pattern-wrapper">
+                    <div class="dot-pattern"></div>
+                </div>
+                <div class="dot-pattern-wrapper-reverse">
+                    <div class="dot-pattern"></div>
+                </div><!-- dot pattern end -->
+                <!-- row start -->
+                <div class="row">
+                    <!-- col start -->
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <!-- news modal body 4 start -->
+                        <div class="modal-body">
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-lead">
+                                Culture / Travel
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page title start -->
+                            <div class="post-title post-title-news">
+                                Style is <span class="post-title-color">everything</span>
+                            </div><!-- page title end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-half"></div><!-- divider end -->
+                            <!-- page subtitle start -->
+                            <h4 class="post-heading post-heading-all post-heading-all-date">
+                                October 4, 2020
+                            </h4><!-- page subtitle end -->
+                            <!-- divider start -->
+                            <div class="inner-divider-large"></div><!-- divider end -->
+                            <!-- news modal body 4 image start -->
+                            <img alt="News Modal" class="img-responsive" src="assetsFinal/img/news/news-4.jpg">
+                            <!-- news modal body 4 image end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <div class="section-intro">
+                                <p>
+                                    <span>Lorem Ipsum</span> is simply dummy text of the printing and typesetting
+                                    industry.
+                                </p>
+                            </div><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- page TXT start -->
+                            <p>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has been the industry's standard dummy text ever since the 1500s, when an
+                                unknown printer took a galley of type and scrambled it to make a type specimen book. It
+                                has survived not only five centuries, but also the leap into electronic
+                                typesetting, remaining <a class="link-underline" href="#">essentially unchanged</a>.
+                            </p><!-- page TXT end -->
+                            <!-- divider start -->
+                            <div class="inner-divider"></div><!-- divider end -->
+                            <!-- button start -->
+                            <div class="button-the-wrapper button-the-wrapper-modal">
+                                <a class="button-the" data-dismiss="modal" href="#">Close</a>
+                            </div><!-- button end -->
+                        </div><!-- news modal body 4 end -->
+                    </div><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- container end -->
+        </div><!-- news modal content 4 end -->
+    </div><!-- news modal 4 end -->
+    <!-- scripts start -->
+    <?php
+    //Foreach para cargar imagenes a css
+    //$numero = 0;
+    /*foreach ($profesores as $profesor){
+        $rutaImg = $profesor['miniatura'];
+        echo "<style type='text/css'>.post-box-photo-news-".$profesor['numero']."{ background-image: url(uploads/cursos/".$rutaImg.");}</style>";
+        //$numero++;
+    }*/
 
-									<!-- MAIN MENU LIST -->
-									<nav class="collapse collapsing navbar-collapse right-1024">
-									  <ul class="nav navbar-nav">									  
-                      <li class="parent">
-                        <a href="#"><div class="main-menu-title" style="font-size:20px; color:black; margin-right:-5em;">Inicio</div></a>                 
-									  </ul>
-                    <ul class="nav navbar-nav">									  
-                      <li class="parent">
-                        <a href="Template/login.php"><div class="main-menu-title" style="font-size:20px; color:black; margin-right:-3em;">Campus</div></a>                 
-									  </ul>
-                    <ul class="nav navbar-nav">									  
-                      <li class="parent">
-                        <a href="#"><div class="main-menu-title" style="font-size:20px; color:black; ">Sobre Nosotros</div></a>                 
-									  </ul>						  
-									</nav>
+    ?>
+    <script src="assetsFinal/js/plugins.js">
+    </script>
+    <script src="assetsFinal/js/ultimex.js">
+    </script><!-- scripts end -->
+</body>
 
-								  </div>
-								</div>
-								<!-- END main-menu -->
-								
-						  </div>
-						  <!-- END container-m-30 -->
-						
-					</div>
-					<!-- END main-menu-container -->					
-				  </div>
-				  <!-- END header-wrapper -->
-				  
-				</header>
-				
-				<!-- REVO SLIDER FULLSCREEN 1 -->
-				<div class="relative">
-					<div class="rs-fullscr-container">
-						
-						<div id="rs-fullwidth" class="tp-banner dark-bg" >
-							<ul>	
-								<!-- SLIDE 1 -->
-								<li data-transition="zoomout" data-slotamount="1" data-masterspeed="1000" data-thumb="images/revo-slider/video-ocean-cover-320x200.jpg"  data-fstransition="fade" data-fsmasterspeed="1000" data-fsslotamount="7" data-saveperformance="off"  data-title="INTRO SLIDE">
-                
-									<!-- MAIN IMAGE -->
-									<!--<img src="images/revo-slider/video-ocean-cover.jpg"  alt="video_woman_cover3"  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat">-->
-									
-									<!-- LAYERS -->
-                  	<!-- LAYER NR.0 1 VIDEO -->
-                    <div class="tp-caption tp-fade fadeout fullscreenvideo"
-                     data-speed="1000"
-                     data-start="1100"
-                     data-easing="Power4.easeOut"
-                     data-elementdelay="0.01"
-                     data-endelementdelay="0.1"
-                     data-endspeed="1500"
-                     data-endeasing="Power4.easeIn"
-                     data-autoplay="true"
-                     data-autoplayonlyfirsttime="false"
-                     data-nextslideatend="true"
-                     data-volume="mute"
-                     data-forceCover="1"
-                     data-dottedoverlay="twoxtwo"
-                     data-aspectratio="16:9"
-                     data-forcerewind="on"
-                     style="z-index: 2;"><video preload="none" loop width="100%" height="100%" 
-                    poster="images/revo-slider/video-ocean-cover.jpg">
-                    <source src='assetsNuevo/portada.mp4' type='video/mp4' />
-                    </video>
-                    </div>                    
-								</li>
-							</ul>					
-						</div>						
-					</div>						
-				</div>
-        
-        <!-- PORTFOLIO SECTION 2 -->
-        <div class="page-section">
-          <div class="relative">
-          
-            <!-- ITEMS GRID -->
-            <ul class="port-grid port-grid-3 port-grid-gut clearfix" id="items-grid" style="margin-top:18px;">
-              
-              <!-- Item 1 -->
-              <?php
-      				  foreach ($empresas as $empresa) { ?>
-                <li class="port-item mix">
-                  <a href="Template/cursos.php?id_empresa=<?php echo $empresa["id"]; ?>">
-                    <div class="port-img-overlay"><img class="port-main-img" src="uploads/empresas/<?php echo $empresa["miniatura"]; ?>" alt="img" ></div>
-                  </a>
-                  <div class="port-overlay-cont">
-                      <div class="port-title-cont" style="text-align:center; margin-top:8rem">
-                        <h3 style="font-size:30px; margin-bottom:5px;"><a href="Template/cursos.php?id_empresa=<?php echo $empresa["id"] ?>"><?php echo $empresa["nombre_empresa"]; ?></a></h3>
-                        <span><a style="font-size:15px;" href="Template/cursos.php?id_empresa=<?php echo $empresa["id"] ?>">Ver Curso</a></span>
-                      </div>
-                  </div>
-                </li>  
-              <?php } ?>           
-            </ul>          
-          </div>
-        </div> 
-        
-        <!-- FOOTER 2 BLACK -->
-        <footer class="page-section pt-80 pb-50 footer2-black">
-          <div class="container">            
-            <div class="footer-2-copy-cont clearfix">
-              <!-- Social Links -->
-              <div class="footer-2-soc-a right">
-                <a href="#" title="Facebook" target="_blank"><i class="fa fa-facebook"></i></a>
-                <a href="#" title="Twitter" target="_blank"><i class="fa fa-twitter"></i></a>
-                <a href="#" title="Behance" target="_blank"><i class="fa fa-behance"></i></a>
-                <a href="#" title="LinkedIn+" target="_blank"><i class="fa fa-linkedin"></i></a>
-                <a href="#" title="Dribbble" target="_blank"><i class="fa fa-dribbble"></i></a>
-              </div>             
-              <!-- Copyright -->
-              <div class="left">
-                <a class="footer-2-copy" href="#" target="_blank">&copy; HASWELL 2020</a>
-              </div>           
-
-            </div>
-                    
-          </div>
-        </footer>
-        
-				<!-- BACK TO TOP -->
-				<p id="back-top">
-          <a href="#top" title="Back to Top"><span class="icon icon-arrows-up"></span></a>
-        </p>
-        
-			</div><!-- End BG -->	
-		</div><!-- End wrap -->	
-			
-<!-- JS begin -->
-
-		<!-- jQuery  -->
-		<script src="assetsNuevo/js/jquery-1.11.2.min.js"></script>
-
-		<!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="assetsNuevo/js/bootstrap.min.js"></script>		
-
-		<!-- MAGNIFIC POPUP -->
-		<script src='assetsNuevo/js/jquery.magnific-popup.min.js'></script>
-    
-    <!-- PORTFOLIO SCRIPTS -->
-    <script src="assetsNuevo/js/isotope.pkgd.min.js"></script>
-    <script src="assetsNuevo/js/imagesloaded.pkgd.min.js"></script>
-    <script src="assetsNuevo/js/masonry.pkgd.min.js"></script>
-    
-    <!-- COUNTER -->
-    <script src="assetsNuevo/js/jquery.countTo.js"></script>
-    
-    <!-- APPEAR -->    
-    <script src="assetsNuevo/js/jquery.appear.js"></script>
-    
-    <!-- OWL CAROUSEL -->    
-    <script src="assetsNuevo/js/owl.carousel.min.js"></script>
-    
-    <!-- MAIN SCRIPT -->
-		<script src="assetsNuevo/js/main.js"></script>
-		
-		<!-- REVOSLIDER SCRIPTS  -->
-			<!-- SLIDER REVOLUTION 4.x SCRIPTS  -->
-			<script src="assetsNuevo/rs-plugin/js/jquery.themepunch.tools.min.js"></script>   
-			<script src="assetsNuevo/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
-      
-      <!-- SLIDER REVOLUTION INIT  -->
-			<script>
-        jQuery(document).ready(function() {
-
-           jQuery('#rs-fullwidth').revolution(
-            {
-              dottedOverlay:"none",
-              delay:16000,
-              startwidth:1170,
-              startheight:700,
-              hideThumbs:200,
-              
-              thumbWidth:100,
-              thumbHeight:50,
-              thumbAmount:5,
-              
-              //fullScreenAlignForce: "off",
-              
-              navigationType:"none",
-              navigationArrows:"solo",
-              navigationStyle:"preview4",
-              
-              hideTimerBar:"on",
-              
-              touchenabled:"on",
-              onHoverStop:"on",
-              
-              swipe_velocity: 0.7,
-              swipe_min_touches: 1,
-              swipe_max_touches: 1,
-              drag_block_vertical: false,
-                          
-              parallax:"scroll",
-              parallaxBgFreeze:"on",
-              parallaxLevels:[45,40,35,50],
-              parallaxDisableOnMobile:"on",
-                          
-              keyboardNavigation:"off",
-              
-              navigationHAlign:"center",
-              navigationVAlign:"bottom",
-              navigationHOffset:0,
-              navigationVOffset:20,
-
-              soloArrowLeftHalign:"left",
-              soloArrowLeftValign:"center",
-              soloArrowLeftHOffset:20,
-              soloArrowLeftVOffset:0,
-
-              soloArrowRightHalign:"right",
-              soloArrowRightValign:"center",
-              soloArrowRightHOffset:20,
-              soloArrowRightVOffset:0,
-                  
-              shadow:0,
-              fullWidth:"on",
-              fullScreen:"off",
-
-              spinner:"spinner4",
-              
-              stopLoop:"off",
-              stopAfterLoops:-1,
-              stopAtSlide:-1,
-
-              shuffle:"off",
-              
-              autoHeight:"off",						
-              forceFullWidth:"off",						
-                          
-              hideThumbsOnMobile:"off",
-              hideNavDelayOnMobile:1500,						
-              hideBulletsOnMobile:"off",
-              hideArrowsOnMobile:"off",
-              hideThumbsUnderResolution:0,
-              
-              hideSliderAtLimit:0,
-              hideCaptionAtLimit:0,
-              hideAllCaptionAtLilmit:0,
-              startWithSlide:0,
-              //fullScreenOffsetContainer: ""	
-            });
-            
-        });	//ready    
-
-			</script>
-
-<!-- JS end -->	
-	
-	</body>
-</html>		
+</html>

@@ -2,6 +2,11 @@
 include '../../../config.php';//BD
 $conectado = conectar();
 
+if(!isset($_SESSION['id_usuario'])){
+	echo '<script>window.location.href = "../../login.php";</script>';
+}
+
+
 if(isset($_GET['id_curso']) and isset($_GET['id_empresa']) and isset($_GET['id_profesor'])){
 	$id_curso = $_GET['id_curso'];
     $id_profesor = $_GET['id_profesor'];
